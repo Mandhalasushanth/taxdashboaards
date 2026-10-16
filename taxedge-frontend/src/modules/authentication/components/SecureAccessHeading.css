@@ -1,0 +1,45 @@
+.tx-secure-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.tx-secure-heading__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.tx-secure-heading__logo {
+  width: clamp(56px, 14vw, 72px);
+  height: auto;
+  border-radius: var(--tx-radius-lg);
+  box-shadow: 0 12px 30px -10px rgba(249, 115, 22, 0.45);
+}
+
+.tx-secure-heading__app {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--tx-on-dark-secondary);
+}
+
+.tx-secure-heading__title {
+  font-size: clamp(32px, 9vw, 44px);
+  font-weight: 800;
+  font-style: italic;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--tx-on-dark-text);
+}
+
+.tx-secure-heading__subtitle {
+  max-width: 34ch;
+  font-size: 15px;
+  color: var(--tx-on-dark-secondary);
+}

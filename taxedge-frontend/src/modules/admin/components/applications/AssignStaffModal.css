@@ -1,0 +1,74 @@
+.tx-assign-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tx-assign-staff-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tx-assign-staff-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.tx-assign-staff-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--tx-border);
+  border-radius: var(--tx-radius-sm);
+  background: var(--tx-surface);
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--tx-transition-fast);
+}
+
+.tx-assign-staff-card:hover {
+  border-color: var(--tx-primary-blue);
+  background: var(--tx-light-blue);
+}
+
+.tx-assign-staff-card--selected {
+  border-color: var(--tx-primary-blue);
+  background: var(--tx-light-blue);
+  box-shadow: 0 0 0 1px var(--tx-primary-blue);
+}
+
+.tx-assign-staff-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--tx-light-navy);
+  color: var(--tx-primary-navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.82rem;
+}
+
+.tx-assign-staff-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tx-assign-staff-name {
+  font-weight: 600;
+  font-size: 0.86rem;
+  color: var(--tx-primary-text);
+}
+
+.tx-assign-staff-role {
+  font-size: 0.74rem;
+  color: var(--tx-secondary-text);
+}

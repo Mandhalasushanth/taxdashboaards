@@ -1,0 +1,76 @@
+/* Revenue KPI Cards */
+.tx-rev-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.tx-rev-kpi {
+  display: flex;
+  flex-direction: column;
+  padding: 18px 20px;
+  border: 1px solid var(--tx-border);
+  border-radius: var(--tx-radius-lg);
+  background-color: var(--tx-surface);
+  box-shadow: var(--tx-shadow-sm);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tx-rev-kpi:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(8, 59, 117, 0.08);
+}
+
+.tx-rev-kpi__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.tx-rev-kpi__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--tx-radius-md);
+}
+
+.tx-rev-kpi__icon--navy { background-color: var(--tx-light-navy); color: var(--tx-primary-navy); }
+.tx-rev-kpi__icon--green { background-color: var(--tx-success-light); color: var(--tx-success); }
+.tx-rev-kpi__icon--orange { background-color: var(--tx-light-orange); color: var(--tx-primary-orange); }
+.tx-rev-kpi__icon--blue { background-color: var(--tx-light-blue); color: var(--tx-primary-blue); }
+.tx-rev-kpi__icon--purple { background-color: #F3E8FF; color: #7E22CE; }
+
+.tx-rev-kpi__pill {
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.tx-rev-kpi__pill--success { background-color: var(--tx-success-light); color: var(--tx-success); }
+.tx-rev-kpi__pill--warning { background-color: var(--tx-warning-light); color: #B45309; }
+.tx-rev-kpi__pill--neutral { background-color: var(--tx-subtle-border); color: var(--tx-secondary-text); }
+
+.tx-rev-kpi__label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--tx-secondary-text);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.tx-rev-kpi__value {
+  margin: 4px 0 6px;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--tx-primary-navy);
+  letter-spacing: -0.02em;
+}
+
+.tx-rev-kpi__hint {
+  font-size: 12px;
+  color: var(--tx-muted-text);
+}

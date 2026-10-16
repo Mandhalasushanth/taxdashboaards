@@ -1,0 +1,25 @@
+.tx-ca-apps-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.tx-ca-apps-section__header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tx-ca-apps-section__title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--tx-primary-navy);
+}
+
+.tx-ca-apps-section__subtitle {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--tx-secondary-text);
+}

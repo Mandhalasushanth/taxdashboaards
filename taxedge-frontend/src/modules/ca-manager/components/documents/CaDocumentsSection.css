@@ -1,0 +1,66 @@
+.tx-ca-docs-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.tx-ca-docs-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tx-ca-doc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: var(--tx-surface);
+  border: 1px solid var(--tx-border);
+  border-radius: var(--tx-radius-md);
+  box-shadow: var(--tx-shadow-sm);
+  gap: 12px;
+}
+
+.tx-ca-doc-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.tx-ca-doc-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--tx-radius-sm);
+  background: var(--tx-light-navy);
+  color: var(--tx-primary-navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tx-ca-doc-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tx-ca-doc-title {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--tx-primary-text);
+}
+
+.tx-ca-doc-subtitle {
+  font-size: 0.78rem;
+  color: var(--tx-secondary-text);
+}
+
+.tx-ca-doc-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

@@ -1,0 +1,59 @@
+.tx-ca-review-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tx-ca-review-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--tx-background);
+  padding: 12px 14px;
+  border-radius: var(--tx-radius-sm);
+  border: 1px solid var(--tx-subtle-border);
+}
+
+.tx-ca-checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  color: var(--tx-primary-text);
+}
+
+.tx-ca-review-decisions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.tx-ca-decision-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  border: 2px solid var(--tx-border);
+  border-radius: var(--tx-radius-sm);
+  background: var(--tx-surface);
+  cursor: pointer;
+  gap: 6px;
+  transition: all var(--tx-transition-fast);
+}
+
+.tx-ca-decision-btn:hover {
+  background: var(--tx-unread-surface);
+}
+
+.tx-ca-decision-btn--approve-active {
+  border-color: var(--tx-success);
+  background: var(--tx-success-light);
+  color: var(--tx-success);
+}
+
+.tx-ca-decision-btn--return-active {
+  border-color: var(--tx-warning);
+  background: var(--tx-warning-light);
+  color: #B45309;
+}

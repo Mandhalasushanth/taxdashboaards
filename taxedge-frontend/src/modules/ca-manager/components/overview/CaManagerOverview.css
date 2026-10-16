@@ -1,0 +1,17 @@
+.tx-ca-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tx-ca-overview__bottom-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .tx-ca-overview__bottom-split {
+    grid-template-columns: 1fr;
+  }
+}

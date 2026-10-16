@@ -1,0 +1,38 @@
+.tx-ca-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tx-ca-header-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--tx-radius-sm);
+  background: transparent;
+  border: 1px solid var(--tx-border);
+  color: var(--tx-secondary-text);
+  cursor: pointer;
+  position: relative;
+  transition: all var(--tx-transition-fast);
+}
+
+.tx-ca-header-btn:hover {
+  background: var(--tx-light-blue);
+  color: var(--tx-primary-blue);
+  border-color: var(--tx-primary-blue);
+}
+
+.tx-ca-header-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--tx-primary-orange);
+  color: #FFFFFF;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: var(--tx-radius-full);
+}

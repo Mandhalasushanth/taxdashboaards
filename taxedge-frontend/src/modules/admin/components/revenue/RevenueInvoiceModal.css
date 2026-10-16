@@ -1,0 +1,233 @@
+/* Official GST Tax Invoice Modal Styles */
+.tx-rev-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.tx-rev-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(6, 21, 45, 0.65);
+  backdrop-filter: blur(4px);
+}
+
+.tx-rev-modal {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 820px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: var(--tx-radius-xl);
+  background-color: #ffffff;
+  box-shadow: var(--tx-shadow-xl);
+  display: flex;
+  flex-direction: column;
+}
+
+.tx-rev-modal__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 20px;
+  background-color: #F8FAFC;
+  border-bottom: 1px solid var(--tx-border);
+}
+
+.tx-rev-modal__status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--tx-success);
+}
+
+.tx-rev-modal__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tx-rev-modal__close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--tx-border);
+  border-radius: var(--tx-radius-md);
+  background-color: #ffffff;
+  color: var(--tx-secondary-text);
+  cursor: pointer;
+}
+
+.tx-rev-modal__close-btn:hover {
+  background-color: var(--tx-background);
+  color: var(--tx-primary-navy);
+}
+
+.tx-rev-invoice-paper {
+  padding: clamp(20px, 4vw, 36px);
+  font-size: 13px;
+  color: #1E293B;
+  background-color: #ffffff;
+}
+
+.tx-rev-inv-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.tx-rev-inv-logo {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--tx-primary-navy);
+  letter-spacing: -0.02em;
+}
+
+.tx-rev-inv-company {
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.tx-rev-inv-address,
+.tx-rev-inv-meta {
+  font-size: 12px;
+  color: var(--tx-secondary-text);
+  margin-top: 3px;
+}
+
+.tx-rev-inv-heading {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--tx-primary-blue);
+  text-align: right;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+
+.tx-rev-inv-kv th {
+  text-align: left;
+  font-size: 12px;
+  color: var(--tx-secondary-text);
+  padding: 2px 8px 2px 0;
+}
+
+.tx-rev-inv-kv td {
+  font-size: 12px;
+  padding: 2px 0;
+}
+
+.tx-rev-inv-divider {
+  border: none;
+  border-top: 1px solid var(--tx-border);
+  margin: 20px 0;
+}
+
+.tx-rev-inv-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--tx-secondary-text);
+  text-transform: uppercase;
+}
+
+.tx-rev-inv-client-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--tx-primary-navy);
+  margin: 4px 0 2px;
+}
+
+.tx-rev-inv-client-sub {
+  font-size: 12px;
+  color: var(--tx-secondary-text);
+}
+
+.tx-rev-inv-items {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  overflow-x: auto;
+  display: table;
+}
+
+.tx-rev-inv-items th {
+  background-color: #F8FAFC;
+  padding: 10px;
+  font-size: 12px;
+  border: 1px solid var(--tx-border);
+}
+
+.tx-rev-inv-items td {
+  padding: 12px 10px;
+  border: 1px solid var(--tx-border);
+  font-size: 12.5px;
+}
+
+.tx-rev-inv-desc-sub {
+  font-size: 11.5px;
+  color: var(--tx-secondary-text);
+  margin-top: 4px;
+}
+
+.tx-rev-inv-num { text-align: right; }
+.tx-rev-inv-total-cell { font-weight: 700; }
+.tx-rev-inv-grand-total { font-size: 15px; color: var(--tx-primary-blue); }
+
+.tx-rev-inv-settlement {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  padding: 16px;
+  background-color: var(--tx-background);
+  border-radius: var(--tx-radius-md);
+  margin-top: 20px;
+}
+
+.tx-rev-inv-settlement-title { font-weight: 700; font-size: 13px; color: var(--tx-primary-navy); }
+.tx-rev-inv-settlement-desc { font-size: 12px; margin-top: 4px; }
+.tx-rev-inv-settlement-note { font-size: 11.5px; color: var(--tx-success); font-weight: 600; margin-top: 6px; }
+
+.tx-rev-inv-settlement-sign { text-align: center; }
+.tx-rev-inv-stamp {
+  display: inline-block;
+  padding: 4px 10px;
+  border: 2px dashed var(--tx-success);
+  border-radius: 4px;
+  color: var(--tx-success);
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  transform: rotate(-4deg);
+  margin-bottom: 8px;
+}
+
+.tx-rev-inv-signatory { font-weight: 700; font-size: 12.5px; }
+.tx-rev-inv-signatory-sub { font-size: 11px; color: var(--tx-secondary-text); }
+
+.tx-rev-inv-footer {
+  margin-top: 24px;
+  padding-top: 14px;
+  border-top: 1px solid var(--tx-border);
+  font-size: 11px;
+  color: var(--tx-muted-text);
+  text-align: center;
+}
+
+@media print {
+  body * { visibility: hidden; }
+  #tx-printable-invoice, #tx-printable-invoice * { visibility: visible; }
+  #tx-printable-invoice { position: absolute; left: 0; top: 0; width: 100%; }
+}

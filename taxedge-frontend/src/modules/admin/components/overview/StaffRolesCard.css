@@ -1,0 +1,26 @@
+.tx-staff-roles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 12px;
+}
+
+.tx-staff-roles__item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px;
+  border: 1px solid var(--tx-border);
+  border-left: 3px solid var(--tx-primary-orange);
+  border-radius: var(--tx-radius-md);
+  background-color: var(--tx-background);
+}
+
+.tx-staff-roles__name {
+  font-weight: 700;
+  color: var(--tx-primary-navy);
+}
+
+.tx-staff-roles__summary {
+  font-size: 13px;
+  color: var(--tx-secondary-text);
+}

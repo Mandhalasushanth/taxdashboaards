@@ -1,0 +1,51 @@
+.tx-ca-comm-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.tx-ca-comm-card {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 20px;
+  background: var(--tx-surface);
+  border: 1px solid var(--tx-border);
+  border-radius: var(--tx-radius-md);
+  box-shadow: var(--tx-shadow-sm);
+  gap: 10px;
+}
+
+.tx-ca-comm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tx-ca-comm-sender {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--tx-primary-navy);
+}
+
+.tx-ca-comm-time {
+  font-size: 0.76rem;
+  color: var(--tx-muted-text);
+}
+
+.tx-ca-comm-msg {
+  font-size: 0.88rem;
+  color: var(--tx-primary-text);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.tx-ca-comm-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--tx-subtle-border);
+  padding-top: 8px;
+  font-size: 0.78rem;
+  color: var(--tx-secondary-text);
+}

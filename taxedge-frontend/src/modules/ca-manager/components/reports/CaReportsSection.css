@@ -1,0 +1,42 @@
+.tx-ca-reports-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.tx-ca-reports-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.tx-ca-report-metric-card {
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  background: var(--tx-surface);
+  border: 1px solid var(--tx-border);
+  border-radius: var(--tx-radius-md);
+  box-shadow: var(--tx-shadow-sm);
+  gap: 6px;
+}
+
+.tx-ca-report-metric-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--tx-secondary-text);
+}
+
+.tx-ca-report-metric-val {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--tx-primary-navy);
+}
+
+.tx-ca-report-metric-hint {
+  font-size: 0.74rem;
+  color: var(--tx-success);
+  font-weight: 500;
+}

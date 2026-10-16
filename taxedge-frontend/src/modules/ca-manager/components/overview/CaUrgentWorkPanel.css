@@ -1,0 +1,123 @@
+.tx-ca-urgent-panel {
+  background: var(--tx-surface);
+  border: 1px solid var(--tx-border);
+  border-radius: var(--tx-radius-md);
+  box-shadow: var(--tx-shadow-sm);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+
+.tx-ca-urgent-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.tx-ca-urgent-panel__title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tx-ca-urgent-panel__title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--tx-primary-navy);
+}
+
+.tx-ca-urgent-badge {
+  background: var(--tx-error-light);
+  color: var(--tx-error);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--tx-radius-full);
+}
+
+.tx-ca-urgent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tx-ca-urgent-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--tx-background);
+  border: 1px solid var(--tx-border);
+  border-radius: var(--tx-radius-sm);
+  gap: 12px;
+  transition: all var(--tx-transition-fast);
+}
+
+.tx-ca-urgent-item:hover {
+  background: var(--tx-unread-surface);
+  border-color: var(--tx-primary-blue);
+}
+
+.tx-ca-urgent-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.tx-ca-urgent-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tx-ca-urgent-id {
+  font-family: var(--tx-font-mono);
+  font-weight: 700;
+  font-size: 0.84rem;
+  color: var(--tx-primary-blue);
+}
+
+.tx-ca-urgent-customer {
+  font-weight: 600;
+  font-size: 0.86rem;
+  color: var(--tx-primary-text);
+}
+
+.tx-ca-urgent-meta {
+  font-size: 0.76rem;
+  color: var(--tx-secondary-text);
+}
+
+.tx-ca-urgent-reason {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.74rem;
+  color: #B45309;
+  background: var(--tx-warning-light);
+  padding: 2px 6px;
+  border-radius: var(--tx-radius-sm);
+  font-weight: 500;
+  width: fit-content;
+}
+
+.tx-ca-urgent-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .tx-ca-urgent-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tx-ca-urgent-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

@@ -1,0 +1,39 @@
+.tx-admin-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tx-admin-section__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: clamp(32px, 6vw, 56px) 20px;
+  border: 1px dashed var(--tx-border);
+  border-radius: var(--tx-radius-lg);
+  background-color: var(--tx-surface);
+  text-align: center;
+}
+
+.tx-admin-section__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--tx-radius-full);
+  background-color: var(--tx-light-blue);
+  color: var(--tx-primary-blue);
+}
+
+.tx-admin-section__title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--tx-primary-navy);
+}
+
+.tx-admin-section__text {
+  max-width: 42ch;
+  color: var(--tx-secondary-text);
+}
