@@ -1,32 +1,34 @@
 import { useState } from 'react';
 import { DeferredContent, LoadingSpinner } from '@/shared';
+import { useCurrentUser } from '@/modules/authentication';
 import { useCaManagerSummary } from '../../hooks/useCaManagerSummary';
-import type { ApplicationItem, AssignStaffInput, CaServiceType } from '../../shared/caManager.types';
+import type { ApplicationItem, AssignStaffInput } from '../../shared/caManager.types';
 import { useCaManagerSection } from '../../shared/CaManagerContext';
 import type { CaSectionId } from '../../shared/caManagerNavigation';
 import { CaApplicationDetailDrawer } from '../applications/CaApplicationDetailDrawer';
 import { CaAssignAgentModal } from '../applications/CaAssignAgentModal';
 import { demoApplicationsStore } from '@/modules/admin/dev/demoApplicationsStore';
 import { caManagerApi } from '../../api/caManagerApi';
+import { CaOverviewGreeting } from './CaOverviewGreeting';
 import { CaKpiCardsBar } from './CaKpiCardsBar';
-import { CaRecentActivityFeed } from './CaRecentActivityFeed';
-import { CaServiceDistribution } from './CaServiceDistribution';
 import { CaUrgentWorkPanel } from './CaUrgentWorkPanel';
+import { CaAgentCapacityPanel } from './CaAgentCapacityPanel';
+import { CaStatutoryCalendar } from './CaStatutoryCalendar';
+import { CaRecentActivityFeed } from './CaRecentActivityFeed';
 import './CaManagerOverview.css';
 
-export interface CaManagerOverviewProps {
+interface CaManagerOverviewProps {
   readonly onSelectSection?: (section: CaSectionId) => void;
   readonly onOpenApp?: (app: ApplicationItem) => void;
   readonly onAssignApp?: (app: ApplicationItem) => void;
-  readonly onFilterServiceCategory?: (category: CaServiceType) => void;
 }
 
 export function CaManagerOverview({
   onSelectSection: propSelectSection,
   onOpenApp,
-  onAssignApp,
-  onFilterServiceCategory
+  onAssignApp
 }: CaManagerOverviewProps = {}) {
+  const user = useCurrentUser();
   const { setActiveSection } = useCaManagerSection();
   const summary = useCaManagerSummary();
   const [selectedApp, setSelectedApp] = useState<ApplicationItem | null>(null);
@@ -35,7 +37,6 @@ export function CaManagerOverview({
   const handleSelectSection = propSelectSection || setActiveSection;
   const handleOpenApp = onOpenApp || ((app) => setSelectedApp(app));
   const handleAssignApp = onAssignApp || ((app) => setAssignTarget(app));
-  const handleFilterServiceCategory = onFilterServiceCategory || (() => setActiveSection('applications'));
 
   const handleAssignConfirm = async (input: AssignStaffInput) => {
     try {
@@ -75,7 +76,7 @@ export function CaManagerOverview({
 
   const handleAddQuery = async (appId: string, msg: string) => {
     try {
-      await demoApplicationsStore.addQuery(appId, 'Sanjay Verma (CA Manager)', 'CA_MANAGER', msg);
+      await demoApplicationsStore.addQuery(appId, 'Anusha (CA Manager)', 'CA_MANAGER', msg);
       if (selectedApp) {
         const refreshed = await caManagerApi.getApplicationById(selectedApp.id);
         if (refreshed) setSelectedApp(refreshed);
@@ -98,22 +99,37 @@ export function CaManagerOverview({
 
   return (
     <div className="tx-ca-overview">
+      {/* 1. Header Greeting with Today Date */}
+      <CaOverviewGreeting userName={user?.displayName || 'Anusha'} />
+
+      {/* 2. Top 5 KPI Cards */}
       <CaKpiCardsBar kpis={summary.kpis} onSelectSection={handleSelectSection} />
 
-      <CaUrgentWorkPanel
-        urgentCases={summary.urgentCases}
-        onOpenApp={handleOpenApp}
-        onAssignApp={handleAssignApp}
-      />
-
-      <div className="tx-ca-overview__bottom-split">
-        <CaServiceDistribution
-          metrics={summary.serviceMetrics}
-          onSelectServiceCategory={handleFilterServiceCategory}
+      {/* 3. Middle Split: Urgent Blockers & Agent Capacity */}
+      <div className="tx-ca-overview__middle-split">
+        <CaUrgentWorkPanel
+          urgentCases={summary.urgentCases}
+          onOpenApp={(app) => handleOpenApp(app as ApplicationItem)}
+          onAssignApp={(app) => handleAssignApp(app as ApplicationItem)}
+          onViewAll={() => handleSelectSection('escalations')}
         />
-        <CaRecentActivityFeed activities={summary.recentActivity} />
+        <CaAgentCapacityPanel
+          onViewAll={() => handleSelectSection('agents')}
+          onSelectAgent={() => handleSelectSection('agents')}
+        />
       </div>
 
+      {/* 4. Bottom Split: Statutory Calendar & Live Activity Feed */}
+      <div className="tx-ca-overview__bottom-split">
+        <CaStatutoryCalendar
+          onViewFullCalendar={() => handleSelectSection('calendar')}
+        />
+        <CaRecentActivityFeed
+          onViewAll={() => handleSelectSection('reports')}
+        />
+      </div>
+
+      {/* Case Detail Drawer */}
       {selectedApp && (
         <CaApplicationDetailDrawer
           app={selectedApp}
@@ -125,6 +141,7 @@ export function CaManagerOverview({
         />
       )}
 
+      {/* Assign Agent Modal */}
       {assignTarget && (
         <CaAssignAgentModal
           app={assignTarget}

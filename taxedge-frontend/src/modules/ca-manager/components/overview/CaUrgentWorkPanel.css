@@ -1,123 +1,268 @@
 .tx-ca-urgent-panel {
   background: var(--tx-surface);
   border: 1px solid var(--tx-border);
-  border-radius: var(--tx-radius-md);
-  box-shadow: var(--tx-shadow-sm);
-  padding: 16px 20px;
-  margin-bottom: 20px;
+  border-radius: var(--tx-radius-lg);
+  padding: 20px 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .tx-ca-urgent-panel__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--tx-border);
 }
 
 .tx-ca-urgent-panel__title-wrap {
   display: flex;
   align-items: center;
   gap: 8px;
+  color: var(--tx-primary-navy);
 }
 
 .tx-ca-urgent-panel__title {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--tx-primary-navy);
 }
 
-.tx-ca-urgent-badge {
-  background: var(--tx-error-light);
-  color: var(--tx-error);
-  font-size: 0.72rem;
+.tx-ca-urgent-count-badge {
+  font-size: 0.74rem;
   font-weight: 700;
-  padding: 2px 7px;
+  background: #FEE2E2;
+  color: #DC2626;
+  padding: 3px 9px;
   border-radius: var(--tx-radius-full);
 }
 
+.tx-ca-panel-link-btn {
+  background: transparent;
+  border: none;
+  color: var(--tx-primary-blue);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.tx-ca-panel-link-btn:hover {
+  text-decoration: underline;
+}
+
+/* Urgent Case List */
 .tx-ca-urgent-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
-.tx-ca-urgent-item {
+.tx-ca-urgent-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 14px;
-  background: var(--tx-background);
+  padding: 16px 18px;
+  background: #FAFAFC;
   border: 1px solid var(--tx-border);
-  border-radius: var(--tx-radius-sm);
-  gap: 12px;
-  transition: all var(--tx-transition-fast);
+  border-radius: var(--tx-radius-md);
+  gap: 16px;
+  transition: background var(--tx-transition-fast), border-color var(--tx-transition-fast);
 }
 
-.tx-ca-urgent-item:hover {
-  background: var(--tx-unread-surface);
-  border-color: var(--tx-primary-blue);
+.tx-ca-urgent-card:hover {
+  background: #FFFFFF;
+  border-color: #CBD5E1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-.tx-ca-urgent-info {
+/* Columns */
+.tx-ca-urgent-col--client {
+  flex: 1.2;
+}
+
+.tx-ca-urgent-priority-tag {
+  margin-bottom: 4px;
+}
+
+.tx-ca-priority-chip--high {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #FEF2F2;
+  color: #DC2626;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.tx-ca-priority-chip--risk {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #FFFBEB;
+  color: #D97706;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.tx-ca-urgent-client-name {
+  margin: 4px 0 2px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.tx-ca-urgent-service-tag {
+  margin: 0 0 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #64748B;
+}
+
+.tx-ca-urgent-meta-line {
+  font-size: 0.75rem;
+  color: #94A3B8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tx-ca-meta-sep {
+  opacity: 0.6;
+}
+
+/* Middle Col: Blocker & Agent */
+.tx-ca-urgent-col--blocker {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  flex: 1;
+  gap: 8px;
 }
 
-.tx-ca-urgent-title-row {
+.tx-ca-blocker-chip {
+  align-self: flex-start;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: #DC2626;
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 4px;
+}
+
+.tx-ca-assigned-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tx-ca-assigned-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #E2E8F0;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.tx-ca-assigned-label {
+  font-size: 0.68rem;
+  color: #94A3B8;
+  line-height: 1;
+}
+
+.tx-ca-assigned-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #1E293B;
+  line-height: 1.2;
+}
+
+.tx-ca-assigned-role {
+  font-size: 0.68rem;
+  color: #64748B;
+}
+
+/* Right Col: Timer & Action Buttons */
+.tx-ca-urgent-col--actions {
+  flex: 1.4;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.tx-ca-timer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #D97706;
+}
+
+.tx-ca-action-buttons-row {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
-.tx-ca-urgent-id {
-  font-family: var(--tx-font-mono);
-  font-weight: 700;
-  font-size: 0.84rem;
-  color: var(--tx-primary-blue);
-}
-
-.tx-ca-urgent-customer {
-  font-weight: 600;
-  font-size: 0.86rem;
-  color: var(--tx-primary-text);
-}
-
-.tx-ca-urgent-meta {
-  font-size: 0.76rem;
-  color: var(--tx-secondary-text);
-}
-
-.tx-ca-urgent-reason {
+.tx-ca-btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 0.74rem;
-  color: #B45309;
-  background: var(--tx-warning-light);
-  padding: 2px 6px;
-  border-radius: var(--tx-radius-sm);
-  font-weight: 500;
-  width: fit-content;
+  gap: 5px;
+  padding: 7px 12px;
+  border-radius: var(--tx-radius-md);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--tx-transition-fast);
+  white-space: nowrap;
 }
 
-.tx-ca-urgent-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.tx-ca-btn--primary {
+  background: var(--tx-primary-blue);
+  color: #FFFFFF;
+  border: none;
 }
 
-@media (max-width: 600px) {
-  .tx-ca-urgent-item {
+.tx-ca-btn--primary:hover {
+  background: var(--tx-primary-navy);
+}
+
+.tx-ca-btn--outline {
+  background: #FFFFFF;
+  border: 1px solid var(--tx-border);
+  color: #334155;
+}
+
+.tx-ca-btn--outline:hover {
+  background: #F1F5F9;
+  border-color: #94A3B8;
+}
+
+@media (max-width: 1000px) {
+  .tx-ca-urgent-card {
     flex-direction: column;
     align-items: flex-start;
   }
-
-  .tx-ca-urgent-actions {
+  .tx-ca-urgent-col--actions {
+    align-items: flex-start;
     width: 100%;
-    justify-content: flex-end;
+  }
+  .tx-ca-action-buttons-row {
+    justify-content: flex-start;
+    width: 100%;
   }
 }

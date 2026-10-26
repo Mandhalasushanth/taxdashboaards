@@ -57,6 +57,7 @@ export function CaManagerSidebar({
   const renderItem = (item: CaNavItem) => {
     const badge = item.counterKey ? counters[item.counterKey] : undefined;
     const isActive = activeSection === item.id;
+    const badgeClass = item.badgeTone === 'danger' ? 'tx-ca-nav__badge--danger' : 'tx-ca-nav__badge--orange';
 
     return (
       <li key={item.id}>
@@ -72,7 +73,7 @@ export function CaManagerSidebar({
         >
           <Icon name={item.iconName} />
           <span className="tx-ca-nav__label">{item.label}</span>
-          {badge ? <span className="tx-ca-nav__badge">{badge}</span> : null}
+          {badge ? <span className={`tx-ca-nav__badge ${badgeClass}`}>{badge}</span> : null}
         </button>
       </li>
     );
@@ -84,20 +85,14 @@ export function CaManagerSidebar({
         <div className="tx-ca-sidebar__brand">
           <BrandLockup
             appName={environment.appName}
-            tagline="CA Operations Workspace"
+            tagline="CA OPERATIONS"
             logoSrc={BRAND_ASSETS.logo}
           />
         </div>
 
         <nav className="tx-ca-nav">
-          <p className="tx-ca-nav__section">Work Queues</p>
           <ul className="tx-ca-nav__list">
-            {CA_NAV_ITEMS.slice(0, 5).map(renderItem)}
-          </ul>
-
-          <p className="tx-ca-nav__section" style={{ marginTop: 12 }}>Operations & Oversight</p>
-          <ul className="tx-ca-nav__list">
-            {CA_NAV_ITEMS.slice(5).map(renderItem)}
+            {CA_NAV_ITEMS.map(renderItem)}
           </ul>
         </nav>
 

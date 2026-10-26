@@ -1,0 +1,227 @@
+.tx-ca-clients-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tx-ca-clients-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.tx-ca-clients-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--tx-primary-navy);
+}
+
+.tx-ca-clients-subtitle {
+  margin: 4px 0 0;
+  font-size: 0.86rem;
+  color: #64748B;
+}
+
+.tx-ca-clients-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tx-ca-client-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--tx-surface);
+  border: 1px solid var(--tx-border);
+  border-radius: var(--tx-radius-md);
+  padding: 0 12px;
+  height: 38px;
+  width: 260px;
+}
+
+.tx-ca-client-search-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.82rem;
+  color: #0F172A;
+  width: 100%;
+}
+
+.tx-ca-client-filters {
+  display: flex;
+  gap: 4px;
+  background: var(--tx-surface);
+  padding: 3px;
+  border: 1px solid var(--tx-border);
+  border-radius: var(--tx-radius-md);
+}
+
+.tx-ca-client-filter-btn {
+  background: transparent;
+  border: none;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #64748B;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all var(--tx-transition-fast);
+}
+
+.tx-ca-client-filter-btn:hover {
+  color: #0F172A;
+}
+
+.tx-ca-client-filter-btn--active {
+  background: var(--tx-primary-blue);
+  color: #FFFFFF;
+}
+
+/* Grid */
+.tx-ca-clients-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 16px;
+}
+
+.tx-ca-client-card {
+  background: var(--tx-surface);
+  border: 1px solid var(--tx-border);
+  border-radius: var(--tx-radius-lg);
+  padding: 18px 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: transform var(--tx-transition-fast), box-shadow var(--tx-transition-fast);
+}
+
+.tx-ca-client-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+}
+
+.tx-ca-client-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.tx-ca-client-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #E0E7FF;
+  color: #3730A3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.tx-ca-client-headline {
+  flex: 1;
+}
+
+.tx-ca-client-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tx-ca-client-name {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.tx-ca-entity-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: #F1F5F9;
+  color: #475569;
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+.tx-ca-client-tax-ids {
+  margin-top: 3px;
+  font-size: 0.74rem;
+  color: #64748B;
+}
+
+.tx-ca-sep {
+  margin: 0 4px;
+  opacity: 0.5;
+}
+
+.tx-ca-client-status-chip {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--tx-radius-full);
+  white-space: nowrap;
+}
+
+.tx-ca-client-status-chip--good {
+  background: #ECFDF5;
+  color: #065F46;
+}
+
+.tx-ca-client-status-chip--pending {
+  background: #FEF3C7;
+  color: #B45309;
+}
+
+.tx-ca-client-services {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tx-ca-services-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #94A3B8;
+  text-transform: uppercase;
+}
+
+.tx-ca-services-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tx-ca-service-pill {
+  font-size: 0.72rem;
+  font-weight: 500;
+  background: #F8FAFC;
+  border: 1px solid var(--tx-border);
+  color: #334155;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.tx-ca-client-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid #F1F5F9;
+  font-size: 0.74rem;
+  color: #64748B;
+}
+
+.tx-ca-client-filing-stat {
+  font-weight: 600;
+  color: var(--tx-primary-blue);
+}
