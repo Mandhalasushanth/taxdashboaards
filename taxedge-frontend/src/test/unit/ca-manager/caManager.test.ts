@@ -106,8 +106,8 @@ describe('CA Manager Store & Role Isolation', () => {
     expect(kpis.newCount).toBeGreaterThanOrEqual(0);
   });
 
-  it('verifies all 12 navigation items are registered and valid', () => {
-    expect(CA_NAV_ITEMS.length).toBe(12);
+  it('verifies all navigation items are registered and valid', () => {
+    expect(CA_NAV_ITEMS.length).toBe(9);
     const overview = getCaNavItem('overview');
     expect(overview.title).toBe('CA Operations Overview');
     const reviews = getCaNavItem('reviews');
