@@ -2,19 +2,21 @@ import type { IconName } from '@/shared';
 
 export type CaSectionId =
   | 'overview'
-  | 'incoming'
   | 'applications'
-  | 'unassigned'
   | 'reviews'
+  | 'clients'
+  | 'calendar'
   | 'agents'
-  | 'tasks'
   | 'documents'
   | 'communication'
-  | 'escalations'
   | 'reports'
+  | 'incoming'
+  | 'unassigned'
+  | 'tasks'
+  | 'escalations'
   | 'notifications';
 
-export type CaCounterKey = 'incoming' | 'unassigned' | 'reviews' | 'notifications';
+export type CaCounterKey = 'applications' | 'reviews' | 'incoming' | 'unassigned' | 'notifications';
 
 export type CaNavCounters = Partial<Record<CaCounterKey, number>>;
 
@@ -25,6 +27,7 @@ export interface CaNavItem {
   readonly title: string;
   readonly description: string;
   readonly counterKey?: CaCounterKey;
+  readonly badgeTone?: 'orange' | 'danger';
 }
 
 export const CA_NAV_ITEMS: readonly CaNavItem[] = Object.freeze([
@@ -33,95 +36,72 @@ export const CA_NAV_ITEMS: readonly CaNavItem[] = Object.freeze([
     label: 'Overview',
     iconName: 'layout-dashboard',
     title: 'CA Operations Overview',
-    description: 'Workload health, critical bottlenecks, review queues and real-time filing progress.'
-  },
-  {
-    id: 'incoming',
-    label: 'Incoming Submissions',
-    iconName: 'inbox',
-    title: 'Incoming Applications Queue',
-    description: 'New and untriaged GST, ITR, and incorporation cases submitted by customers.',
-    counterKey: 'incoming'
+    description: 'Executive overview of active cases, bottlenecks, statutory deadlines and agent workloads.'
   },
   {
     id: 'applications',
-    label: 'All CA Applications',
+    label: 'Case Ledger',
     iconName: 'file-spreadsheet',
-    title: 'Chartered Accountancy Registry',
-    description: 'Searchable master ledger of all GST, ITR, and incorporation customer files.'
-  },
-  {
-    id: 'unassigned',
-    label: 'Unassigned Queue',
-    iconName: 'alert-circle',
-    title: 'Unassigned Case Triage',
-    description: 'CA files requiring immediate supervisor triage and executive agent allocation.',
-    counterKey: 'unassigned'
+    title: 'CA Case Ledger',
+    description: 'Master register of GST, Income Tax Returns, and company incorporation customer filings.',
+    counterKey: 'applications',
+    badgeTone: 'orange'
   },
   {
     id: 'reviews',
-    label: 'My Review Queue',
+    label: 'Review & Sign-Off',
     iconName: 'list-checks',
-    title: 'Manager Approval & Quality Review',
-    description: 'Agent-prepared filings and tax drafts awaiting manager decision and sign-off.',
-    counterKey: 'reviews'
+    title: 'Manager Review & Quality Sign-Off',
+    description: 'Tax computation drafts and filing deliverables submitted by agents awaiting supervisor sign-off.',
+    counterKey: 'reviews',
+    badgeTone: 'danger'
+  },
+  {
+    id: 'clients',
+    label: 'Client Directory',
+    iconName: 'users',
+    title: 'Taxpayers & Business Clients',
+    description: 'Corporate entities, LLP partners, and individual salaried/business taxpayers master list.'
+  },
+  {
+    id: 'calendar',
+    label: 'Tax Compliance Calendar',
+    iconName: 'calendar',
+    title: 'Statutory Compliance Calendar',
+    description: 'Government filing deadlines for GSTR-1, GSTR-3B, Advance Tax, ITR, and TDS return schedules.'
   },
   {
     id: 'agents',
-    label: 'CA Agents & Workload',
-    iconName: 'users',
-    title: 'CA Agent Capacity & Workload',
-    description: 'Active agent directory, specialization skills, load balancing and SLA scores.'
-  },
-  {
-    id: 'tasks',
-    label: 'Tasks & Checklists',
-    iconName: 'check-check',
-    title: 'Tasks & Case Checklists',
-    description: 'Outstanding operational milestones and service compliance checklists.'
+    label: 'Agent Workload & Capacity',
+    iconName: 'user-check',
+    title: 'CA Executive Directory & Capacity',
+    description: 'Case load distribution, specialization tags, SLA performance metrics, and team capacity.'
   },
   {
     id: 'documents',
     label: 'Document Vault',
     iconName: 'layers',
-    title: 'Document Verification Vault',
-    description: 'Client tax forms, bank statements, and KYC records requiring CA verification.'
+    title: 'Client Document Verification Vault',
+    description: 'Customer PAN cards, Aadhaar, Form 16, Bank statements, and balance sheets repository.'
   },
   {
     id: 'communication',
-    label: 'Customer Communication',
+    label: 'Communications',
     iconName: 'message-square',
-    title: 'Customer Queries & Messages',
-    description: 'Clarifications, missing information requests, and real-time client discussions.'
-  },
-  {
-    id: 'escalations',
-    label: 'Deadlines & Escalations',
-    iconName: 'clock',
-    title: 'Deadlines & SLA Escalations',
-    description: 'Overdue filings, critical SLA risks, and blocked cases requiring manager intervention.'
+    title: 'Customer & Team Communication',
+    description: 'Direct client discussions, missing document clarification requests, and internal notes.'
   },
   {
     id: 'reports',
-    label: 'Operational Reports',
+    label: 'SLA Reports',
     iconName: 'bar-chart',
-    title: 'Compliance Reports & Analytics',
-    description: 'Filing throughput velocity, SLA performance, and agent productivity reports.'
-  },
-  {
-    id: 'notifications',
-    label: 'Notifications',
-    iconName: 'bell',
-    title: 'Notifications & Alerts',
-    description: 'System alerts, customer replies, document uploads, and milestone updates.',
-    counterKey: 'notifications'
+    title: 'Operational Velocity & SLA Reports',
+    description: 'Average turnaround times (TAT), first-pass review yield, and monthly throughput reports.'
   }
 ]);
 
 export function getCaNavItem(id: CaSectionId): CaNavItem {
   const item = CA_NAV_ITEMS.find((entry) => entry.id === id);
-  if (!item) {
-    throw new Error(`CA navigation item "${id}" is not configured.`);
-  }
-  return item;
+  if (item) return item;
+  return CA_NAV_ITEMS[0];
 }

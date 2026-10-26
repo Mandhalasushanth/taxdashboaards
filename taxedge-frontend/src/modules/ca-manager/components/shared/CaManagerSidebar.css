@@ -88,12 +88,19 @@
 
 .tx-ca-nav__badge {
   margin-left: auto;
-  background: var(--tx-primary-orange);
   color: #FFFFFF;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  padding: 2px 6px;
+  padding: 1px 7px;
   border-radius: var(--tx-radius-full);
+}
+
+.tx-ca-nav__badge--orange {
+  background: var(--tx-primary-orange);
+}
+
+.tx-ca-nav__badge--danger {
+  background: var(--tx-error);
 }
 
 .tx-ca-sidebar--collapsed .tx-ca-nav__badge {

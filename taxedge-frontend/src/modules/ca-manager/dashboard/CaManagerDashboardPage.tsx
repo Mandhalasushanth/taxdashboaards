@@ -3,6 +3,8 @@ import { useCurrentUser } from '@/modules/authentication';
 import { useDocumentTitle } from '@/shared';
 import { CaAgentsWorkloadSection } from '../components/agents/CaAgentsWorkloadSection';
 import { CaApplicationsSection } from '../components/applications/CaApplicationsSection';
+import { CaCalendarSection } from '../components/calendar/CaCalendarSection';
+import { CaClientsSection } from '../components/clients/CaClientsSection';
 import { CaCommunicationSection } from '../components/communication/CaCommunicationSection';
 import { CaDocumentsSection } from '../components/documents/CaDocumentsSection';
 import { CaEscalationsSection } from '../components/escalations/CaEscalationsSection';
@@ -43,6 +45,12 @@ function renderSection(activeSection: CaSectionId) {
             unassignedOnly={true}
           />
         );
+      case 'clients':
+        return <CaClientsSection />;
+      case 'calendar':
+        return <CaCalendarSection />;
+      case 'escalations':
+        return <CaEscalationsSection />;
       case 'reviews':
         return <CaReviewQueueSection />;
       case 'agents':
@@ -53,8 +61,6 @@ function renderSection(activeSection: CaSectionId) {
         return <CaDocumentsSection />;
       case 'communication':
         return <CaCommunicationSection />;
-      case 'escalations':
-        return <CaEscalationsSection />;
       case 'reports':
         return <CaReportsSection />;
       case 'notifications':

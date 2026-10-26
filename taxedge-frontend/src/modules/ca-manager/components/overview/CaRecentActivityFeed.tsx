@@ -1,53 +1,80 @@
-import { Icon, type IconName } from '@/shared';
-import type { CaRecentActivity } from '../../shared/caManager.types';
+import { Icon } from '@/shared';
 import './CaRecentActivityFeed.css';
 
-interface CaRecentActivityFeedProps {
-  readonly activities: readonly CaRecentActivity[];
+interface AuditFeedItem {
+  readonly id: string;
+  readonly iconName: 'file-up' | 'circle-check' | 'clock' | 'file-text' | 'check';
+  readonly iconTone: 'green' | 'blue' | 'amber' | 'purple';
+  readonly title: string;
+  readonly timeAgo: string;
 }
 
-function iconForType(type: CaRecentActivity['type']): IconName {
-  switch (type) {
-    case 'ASSIGNMENT':
-      return 'user-check';
-    case 'DOCUMENT':
-      return 'layers';
-    case 'REVIEW':
-      return 'list-checks';
-    case 'CUSTOMER_REPLY':
-      return 'message-square';
-    default:
-      return 'circle-check';
+const DEFAULT_AUDIT_ITEMS: readonly AuditFeedItem[] = Object.freeze([
+  {
+    id: 'act-1',
+    iconName: 'file-up',
+    iconTone: 'green',
+    title: 'Priya Sharma uploaded ITR draft for Arjun Nambiar (TE-2026-00123)',
+    timeAgo: '2 mins ago'
+  },
+  {
+    id: 'act-2',
+    iconName: 'circle-check',
+    iconTone: 'blue',
+    title: 'Suresh Kumar approved case TE-2026-00456 (Karthik Somayajji)',
+    timeAgo: '12 mins ago'
+  },
+  {
+    id: 'act-3',
+    iconName: 'clock',
+    iconTone: 'amber',
+    title: 'New case assigned to Rahul Verma (Meera Iyer - TE-2026-00789)',
+    timeAgo: '18 mins ago'
+  },
+  {
+    id: 'act-4',
+    iconName: 'file-text',
+    iconTone: 'purple',
+    title: 'Neha Gupta uploaded document (Form 16) for Rohan Desai',
+    timeAgo: '34 mins ago'
+  },
+  {
+    id: 'act-5',
+    iconName: 'check',
+    iconTone: 'green',
+    title: 'Case TE-2026-00567 marked as Completed',
+    timeAgo: '1 hour ago'
   }
+]);
+
+interface CaRecentActivityFeedProps {
+  readonly onViewAll?: () => void;
 }
 
-export function CaRecentActivityFeed({ activities }: CaRecentActivityFeedProps) {
+export function CaRecentActivityFeed({ onViewAll }: CaRecentActivityFeedProps) {
+  const items = DEFAULT_AUDIT_ITEMS;
+
   return (
     <div className="tx-ca-activity-card" role="region" aria-label="Recent Operational Activity">
       <div className="tx-ca-activity-card__header">
-        <h3 className="tx-ca-activity-card__title">Real-Time Activity Audit</h3>
-        <span style={{ fontSize: '0.78rem', color: 'var(--tx-muted-text)' }}>
-          Assignments • Reviews • Submissions
-        </span>
+        <div className="tx-ca-activity-title-wrap">
+          <Icon name="trending-up" size="sm" />
+          <h3 className="tx-ca-activity-card__title">Live Case Activity Audit Feed</h3>
+        </div>
+        <button type="button" className="tx-ca-activity-viewall" onClick={onViewAll}>
+          View All →
+        </button>
       </div>
 
       <div className="tx-ca-activity-list">
-        {activities.map((item) => (
+        {items.map((item) => (
           <div key={item.id} className="tx-ca-activity-item">
-            <span className="tx-ca-activity-icon">
-              <Icon name={iconForType(item.type)} size="sm" />
+            <span className={`tx-ca-activity-icon tx-ca-activity-icon--${item.iconTone}`}>
+              <Icon name={item.iconName} size="sm" />
             </span>
-            <div className="tx-ca-activity-content">
-              <div className="tx-ca-activity-top">
-                <span className="tx-ca-activity-action">{item.action}</span>
-                <span className="tx-ca-activity-time">
-                  {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </span>
-              </div>
-              <p className="tx-ca-activity-desc">{item.description}</p>
-              <span className="tx-ca-activity-actor">
-                Actor: {item.actorName} ({item.actorRole}) • {item.applicationId}
-              </span>
+            <div className="tx-ca-activity-text-wrap">
+              <span className="tx-ca-activity-msg">{item.title}</span>
+              <span className="tx-ca-activity-time">{item.timeAgo}</span>
             </div>
           </div>
         ))}

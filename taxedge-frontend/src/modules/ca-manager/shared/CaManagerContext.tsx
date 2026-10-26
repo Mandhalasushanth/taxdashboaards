@@ -45,6 +45,8 @@ function isValidSection(val: string): boolean {
     'applications',
     'unassigned',
     'reviews',
+    'clients',
+    'calendar',
     'agents',
     'tasks',
     'documents',

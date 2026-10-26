@@ -232,13 +232,18 @@ export const demoCaManagerStore = Object.freeze({
       const reviewPending = reviews.filter((r) => r.status === 'PENDING').length;
 
       return {
+        applications: apps.length > 0 ? apps.length : 18,
+        reviews: reviewPending > 0 ? reviewPending : 3,
         incoming,
         unassigned,
-        reviews: reviewPending,
-        notifications: 2
+        notifications: 4
       };
     } catch {
-      return {};
+      return {
+        applications: 18,
+        reviews: 3,
+        notifications: 4
+      };
     }
   }
 });
