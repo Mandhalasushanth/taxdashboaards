@@ -6,6 +6,7 @@ const DEFAULTS = Object.freeze({
   appName: 'TaxEdge',
   appTagline: 'Fin Solutions',
   apiBaseUrl: '/api/v1',
+  notificationsBaseUrl: '/notifications',
   apiTimeoutMs: 15000,
   sessionIdleTimeoutMinutes: 30
 });
@@ -28,6 +29,8 @@ export interface Environment {
   readonly appName: string;
   readonly appTagline: string;
   readonly apiBaseUrl: string;
+  /** AdminPushNotificationController (@RequestMapping("/notifications")), which sits outside apiBaseUrl. */
+  readonly notificationsBaseUrl: string;
   readonly apiTimeoutMs: number;
   readonly sessionIdleTimeoutMs: number;
   readonly isProduction: boolean;
@@ -39,6 +42,9 @@ export const environment: Environment = Object.freeze({
   appName: readString(import.meta.env.VITE_APP_NAME, DEFAULTS.appName),
   appTagline: readString(import.meta.env.VITE_APP_TAGLINE, DEFAULTS.appTagline),
   apiBaseUrl: stripTrailingSlash(readString(import.meta.env.VITE_API_BASE_URL, DEFAULTS.apiBaseUrl)),
+  notificationsBaseUrl: stripTrailingSlash(
+    readString(import.meta.env.VITE_NOTIFICATIONS_BASE_URL, DEFAULTS.notificationsBaseUrl)
+  ),
   apiTimeoutMs: readPositiveNumber(import.meta.env.VITE_API_TIMEOUT_MS, DEFAULTS.apiTimeoutMs),
   sessionIdleTimeoutMs:
     readPositiveNumber(import.meta.env.VITE_SESSION_IDLE_TIMEOUT_MINUTES, DEFAULTS.sessionIdleTimeoutMinutes) * 60_000,

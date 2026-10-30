@@ -11,23 +11,25 @@ import './ContactList.css';
 
 export interface ContactListProps {
   readonly directory: StaffContactsController;
+  readonly allLabel: string;
+  readonly emptyGroupText: string;
   readonly selectedId: string | null;
   readonly onSelect: (contactId: string) => void;
 }
 
-function filterLabel(filter: ContactRoleFilter): string {
-  return filter === 'ALL' ? 'All staff' : STAFF_ROLE_THEME[filter].pluralLabel;
+function filterLabel(filter: ContactRoleFilter, allLabel: string): string {
+  return filter === 'ALL' ? allLabel : STAFF_ROLE_THEME[filter].pluralLabel;
 }
 
 function previewText(contact: StaffContact): string {
   if (!contact.lastMessage) {
     return 'No messages yet';
   }
-  return contact.lastMessage.fromAdmin ? `You: ${contact.lastMessage.body}` : contact.lastMessage.body;
+  return contact.lastMessage.fromMe ? `You: ${contact.lastMessage.body}` : contact.lastMessage.body;
 }
 
 /** Left pane: search and the list of staff conversations. */
-export function ContactList({ directory, selectedId, onSelect }: ContactListProps) {
+export function ContactList({ directory, allLabel, emptyGroupText, selectedId, onSelect }: ContactListProps) {
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => directory.setSearch(event.target.value);
   const isSearching = directory.search.trim().length > 0;
 
@@ -67,11 +69,11 @@ export function ContactList({ directory, selectedId, onSelect }: ContactListProp
   };
 
   return (
-    <aside className="tx-contacts" aria-label="Staff conversations">
+    <aside className="tx-contacts" aria-label="Conversations">
       <div className="tx-contacts__header">
         <label className="tx-contacts__search">
           <Icon name="search" size="sm" />
-          <span className="tx-sr-only">Search staff</span>
+          <span className="tx-sr-only">Search contacts</span>
           <input
             type="search"
             value={directory.search}
@@ -95,7 +97,7 @@ export function ContactList({ directory, selectedId, onSelect }: ContactListProp
         </label>
         <div className="tx-contacts__meta-row">
           <span className="tx-contacts__count">
-            {isSearching ? `Matching "${directory.search.trim()}"` : filterLabel(directory.roleFilter)}
+            {isSearching ? `Matching "${directory.search.trim()}"` : filterLabel(directory.roleFilter, allLabel)}
             <span className="tx-contacts__count-pill">{directory.visible.length}</span>
           </span>
           {isSearching ? (
@@ -111,7 +113,7 @@ export function ContactList({ directory, selectedId, onSelect }: ContactListProp
       ) : (
         <div className="tx-contacts__empty">
           <p className="tx-contacts__empty-text">
-            {isSearching ? `No staff match "${directory.search.trim()}".` : 'No staff members in this group.'}
+            {isSearching ? `No one matches "${directory.search.trim()}".` : emptyGroupText}
           </p>
           {isSearching ? (
             <button type="button" className="tx-contacts__empty-btn" onClick={() => directory.setSearch('')}>

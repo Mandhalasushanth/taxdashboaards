@@ -39,9 +39,9 @@ export function hasCsrfToken(): boolean {
   return readCookie(XSRF_COOKIE_NAME) !== null;
 }
 
-function buildHeaders(method: HttpMethod, hasBody: boolean): Headers {
+function buildHeaders(method: HttpMethod, hasJsonBody: boolean): Headers {
   const headers = new Headers({ Accept: 'application/json' });
-  if (hasBody) {
+  if (hasJsonBody) {
     headers.set('Content-Type', 'application/json');
   }
   const xsrfToken = SAFE_METHODS.has(method) ? null : readCookie(XSRF_COOKIE_NAME);
@@ -91,14 +91,16 @@ async function request<T>(method: HttpMethod, path: string, body?: unknown, opti
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), environment.apiTimeoutMs);
   const hasBody = body !== undefined;
+  // Multipart bodies let the browser set the boundary header itself.
+  const isFormData = body instanceof FormData;
 
   try {
     const response = await fetch(`${environment.apiBaseUrl}${path}`, {
       method,
       credentials: 'include',
       cache: 'no-store',
-      headers: buildHeaders(method, hasBody),
-      body: hasBody ? JSON.stringify(body) : undefined,
+      headers: buildHeaders(method, hasBody && !isFormData),
+      body: isFormData ? body : hasBody ? JSON.stringify(body) : undefined,
       signal: controller.signal
     });
     const payload = await parsePayload(response);
@@ -120,5 +122,6 @@ export const apiClient = Object.freeze({
   post: <T>(path: string, body?: unknown, options?: RequestOptions) => request<T>('POST', path, body ?? {}, options),
   put: <T>(path: string, body?: unknown, options?: RequestOptions) => request<T>('PUT', path, body ?? {}, options),
   patch: <T>(path: string, body?: unknown, options?: RequestOptions) => request<T>('PATCH', path, body ?? {}, options),
+  upload: <T>(path: string, form: FormData, options?: RequestOptions) => request<T>('POST', path, form, options),
   delete: <T>(path: string, options?: RequestOptions) => request<T>('DELETE', path, undefined, options)
 });

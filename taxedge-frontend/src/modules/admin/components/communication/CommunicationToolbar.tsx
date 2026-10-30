@@ -1,17 +1,19 @@
 import { Icon } from '@/shared';
 import type { ContactRoleFilter } from '../../shared/communication.types';
-import { ROLE_FILTER_ORDER, STAFF_ROLE_THEME } from './config/staffRoleTheme';
+import { STAFF_ROLE_THEME } from './config/staffRoleTheme';
 import './CommunicationToolbar.css';
 
 export interface CommunicationToolbarProps {
+  readonly filters: readonly ContactRoleFilter[];
+  readonly allLabel: string;
   readonly roleFilter: ContactRoleFilter;
   readonly roleCounts: Readonly<Record<ContactRoleFilter, number>>;
   readonly unreadCount: number;
   readonly onRoleFilterChange: (filter: ContactRoleFilter) => void;
 }
 
-function filterLabel(filter: ContactRoleFilter): string {
-  return filter === 'ALL' ? 'All staff' : STAFF_ROLE_THEME[filter].pluralLabel;
+function filterLabel(filter: ContactRoleFilter, allLabel: string): string {
+  return filter === 'ALL' ? allLabel : STAFF_ROLE_THEME[filter].pluralLabel;
 }
 
 /**
@@ -21,18 +23,20 @@ function filterLabel(filter: ContactRoleFilter): string {
  * Inactive: Clean navy/slate text with a soft circular count badge.
  */
 export function CommunicationToolbar({
+  filters,
+  allLabel,
   roleFilter,
   roleCounts,
   unreadCount,
   onRoleFilterChange
 }: CommunicationToolbarProps) {
   return (
-    <nav className="tx-comm-toolbar" aria-label="Staff role filters">
-      <div className="tx-comm-toolbar__pills" role="radiogroup" aria-label="Filter staff by role">
-        {ROLE_FILTER_ORDER.map((filter) => {
+    <nav className="tx-comm-toolbar" aria-label="Contact role filters">
+      <div className="tx-comm-toolbar__pills" role="radiogroup" aria-label="Filter contacts by role">
+        {filters.map((filter) => {
           const isActive = roleFilter === filter;
           const count = roleCounts[filter] ?? 0;
-          const label = filterLabel(filter);
+          const label = filterLabel(filter, allLabel);
 
           return (
             <button
@@ -44,7 +48,7 @@ export function CommunicationToolbar({
               onClick={() => onRoleFilterChange(filter)}
             >
               <span className="tx-comm-pill__label">{label}</span>
-              <span className="tx-comm-pill__badge" aria-label={`${count} staff`}>
+              <span className="tx-comm-pill__badge" aria-label={`${count} contacts`}>
                 {count}
               </span>
             </button>
@@ -54,7 +58,7 @@ export function CommunicationToolbar({
 
       <div className="tx-comm-toolbar__meta">
         {unreadCount > 0 ? (
-          <span className="tx-comm-toolbar__unread" aria-label={`${unreadCount} unread messages from staff`}>
+          <span className="tx-comm-toolbar__unread" aria-label={`${unreadCount} unread messages`}>
             <span className="tx-comm-toolbar__pulse-dot" aria-hidden="true" />
             <span>
               {unreadCount} unread message{unreadCount === 1 ? '' : 's'}

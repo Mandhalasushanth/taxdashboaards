@@ -28,6 +28,8 @@ export interface WorkspaceLayoutProps {
   /** Background work to run once the workspace is idle, e.g. prefetching page code. */
   readonly onIdle?: () => void;
   readonly renderProfileModal?: (controls: { open: boolean; onClose: () => void }) => ReactNode;
+  /** Where "My profile" leads inside this workspace; defaults to the area's profile page. */
+  readonly profilePath?: string;
 }
 
 function isDrawerViewport(): boolean {
@@ -41,7 +43,8 @@ export function WorkspaceLayout({
   renderHeaderActions,
   resolvePageTitle,
   onIdle,
-  renderProfileModal
+  renderProfileModal,
+  profilePath
 }: WorkspaceLayoutProps) {
   const { user, signOut, signingOut } = useAuthentication();
   const { pathname } = useLocation();
@@ -80,9 +83,9 @@ export function WorkspaceLayout({
       setProfileOpen(true);
       return;
     }
-    const target = user?.role === 'ADMIN' ? ROUTE_PATHS.adminProfile : ROUTE_PATHS.staffProfile;
+    const target = profilePath ?? (user?.role === 'ADMIN' ? ROUTE_PATHS.adminProfile : ROUTE_PATHS.staffProfile);
     navigate(target);
-  }, [renderProfileModal, user?.role, navigate]);
+  }, [renderProfileModal, profilePath, user?.role, navigate]);
 
   if (!user) {
     return null;

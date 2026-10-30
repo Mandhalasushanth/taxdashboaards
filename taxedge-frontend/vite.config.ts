@@ -9,7 +9,8 @@ import path from 'node:path';
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_');
   const apiBasePath = env.VITE_API_BASE_URL || '/api/v1';
-  const proxyTarget = env.VITE_API_PROXY_TARGET;
+  const notificationsBasePath = env.VITE_NOTIFICATIONS_BASE_URL || '/notifications';
+  const proxyTarget = env.VITE_API_PROXY_TARGET || 'http://localhost:8086';
   const devPort = Number(env.VITE_DEV_SERVER_PORT) || 5173;
 
   return {
@@ -18,9 +19,14 @@ export default defineConfig(({ mode }) => {
       alias: { '@': path.resolve(__dirname, './src') }
     },
     server: {
+      host: true,
       port: devPort,
       proxy: proxyTarget && apiBasePath.startsWith('/')
-        ? { [apiBasePath]: { target: proxyTarget, changeOrigin: false } }
+        ? {
+            [apiBasePath]: { target: proxyTarget, changeOrigin: true },
+            // Push notifications (AdminPushNotificationController) live outside the API path.
+            [notificationsBasePath]: { target: proxyTarget, changeOrigin: true }
+          }
         : undefined
     },
     build: {

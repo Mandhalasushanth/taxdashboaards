@@ -1,19 +1,21 @@
-import type { StaffRole } from '@/modules/authentication';
+import type { Role } from '@/modules/authentication';
 import type { ContactRoleFilter } from '../../../shared/communication.types';
 
 export interface StaffRoleTheme {
   /** Tab label, e.g. "CA Managers". */
   readonly pluralLabel: string;
   /** CSS modifier for the avatar and role tag colour. */
-  readonly tone: 'navy' | 'blue' | 'orange' | 'green';
+  readonly tone: 'navy' | 'blue' | 'orange' | 'green' | 'purple';
 }
 
 /** Colour and plural label per staff role, so each group is easy to tell apart in the list. */
-export const STAFF_ROLE_THEME: Readonly<Record<StaffRole, StaffRoleTheme>> = Object.freeze({
+export const STAFF_ROLE_THEME: Readonly<Record<Role, StaffRoleTheme>> = Object.freeze({
+  ADMIN: { pluralLabel: 'Administrator', tone: 'purple' },
   CA_MANAGER: { pluralLabel: 'CA Managers', tone: 'navy' },
   CA_AGENT: { pluralLabel: 'CA Agents', tone: 'blue' },
   LOAN_MANAGER: { pluralLabel: 'Loan Managers', tone: 'orange' },
   LOAN_AGENT: { pluralLabel: 'Loan Agents', tone: 'green' }
 });
 
+/** The admin console's tabs: every staff role. */
 export const ROLE_FILTER_ORDER: readonly ContactRoleFilter[] = Object.freeze(['ALL', 'CA_MANAGER', 'CA_AGENT', 'LOAN_MANAGER', 'LOAN_AGENT']);

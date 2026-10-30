@@ -1,7 +1,7 @@
 import { ApiError, defaultMessageFor, type ApiErrorCode } from '@/core/api';
 import type { AuthenticationGateway, LoginCredentials } from '../shared/types/authentication.types';
 import type { SessionUser } from '../shared/types/session.types';
-import { DEMO_ACCOUNTS, type DemoAccount } from './demoAccounts';
+import { DEMO_ACCOUNTS, ROLE_PERMISSIONS, type DemoAccount } from './demoAccounts';
 import { deriveDisplayNameFromUsername } from '../shared/utils/displayNameUtils';
 
 /**
@@ -64,7 +64,7 @@ function toSessionUser(account: DemoAccount): SessionUser {
   return Object.freeze({
     id: account.id,
     username: account.username,
-    displayName: deriveDisplayNameFromUsername(account.username),
+    displayName: account.displayName,
     role: account.role,
     permissions: account.permissions,
     lastLoginAt: new Date().toISOString()
@@ -75,7 +75,7 @@ function toSessionUser(account: DemoAccount): SessionUser {
  * Staff accounts the administrator manages in Admin → Managers / Agents (admin/dev/demoStaffStore).
  * Read straight from that store's storage key so this module stays independent of the admin module.
  */
-const ADMIN_STAFF_STORAGE_KEY = 'taxedge.demo.adminStaff';
+const ADMIN_STAFF_STORAGE_KEY = 'taxedge.demo.adminStaff.v2';
 
 interface StoredStaffAccount {
   readonly username: string;
@@ -96,46 +96,33 @@ function readAdminStaff(): readonly StoredStaffAccount[] {
   }
 }
 
-/** Index offset keeps admin-managed accounts' ids apart from the five seed accounts. */
+/** Index offset keeps admin-managed accounts' ids apart from the built-in admin account. */
 const ADMIN_STAFF_ID_OFFSET = 1000;
 
-/**
- * An admin-managed record decides the account when it matches the username: its own password if the
- * admin set one, otherwise the seed account of the same email. Its Active flag always applies.
- */
-function findAdminManagedAccount(normalized: string, seed: DemoAccount | undefined): DemoAccount | undefined {
+/** A manager or agent login exists only once the administrator has created it with a password. */
+function findAdminManagedAccount(normalized: string): DemoAccount | undefined {
   const staff = readAdminStaff();
   const index = staff.findIndex((member) => member.username?.trim().toLowerCase() === normalized);
-  if (index === -1) {
+  const record = index === -1 ? undefined : staff[index];
+  if (!record?.passwordHash || !record.salt) {
     return undefined;
   }
-  const record = staff[index];
-  if (record.passwordHash && record.salt) {
-    const roleTemplate = DEMO_ACCOUNTS.find((account) => account.role === record.role);
-    return {
-      id: ADMIN_STAFF_ID_OFFSET + index,
-      username: normalized,
-      displayName: record.fullName,
-      role: record.role,
-      active: record.active === true,
-      salt: record.salt,
-      passwordHash: record.passwordHash,
-      permissions: roleTemplate?.permissions ?? []
-    };
-  }
-  return seed ? { ...seed, active: seed.active && record.active === true } : undefined;
+  return {
+    id: ADMIN_STAFF_ID_OFFSET + index,
+    username: normalized,
+    displayName: record.fullName,
+    role: record.role,
+    active: record.active === true,
+    salt: record.salt,
+    passwordHash: record.passwordHash,
+    permissions: ROLE_PERMISSIONS[record.role] ?? []
+  };
 }
 
+/** The administrator is the only built-in login; everyone else signs in with what the admin created. */
 function findAccount(username: string): DemoAccount | undefined {
   const normalized = username.trim().toLowerCase();
-  const seed = findSeedAccount(normalized);
-  const managed = findAdminManagedAccount(normalized, seed);
-  if (managed) {
-    return managed;
-  }
-  // Once the admin directory exists it owns every staff login: a seed staff email it no longer
-  // lists (because the admin changed it) must stop working. The admin account is never managed there.
-  return seed && seed.role !== 'ADMIN' && readAdminStaff().length > 0 ? undefined : seed;
+  return findSeedAccount(normalized) ?? findAdminManagedAccount(normalized);
 }
 
 function findSeedAccount(username: string): DemoAccount | undefined {

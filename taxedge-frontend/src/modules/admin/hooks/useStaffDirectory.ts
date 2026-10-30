@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { defaultMessageFor, isApiError } from '@/core/api';
 import { logger } from '@/core/logging/logger';
-import { createStaffMember, fetchStaff, setStaffActive, updateStaffMember } from '../api/adminStaffApi';
+import { createStaffMember, deleteStaffMember, fetchStaff, updateStaffMember } from '../api/adminStaffApi';
 import {
   ROLE_DOMAIN,
   type NewStaffInput,
@@ -44,7 +44,15 @@ export function useStaffDirectory(tier: StaffTier) {
   useEffect(() => {
     let active = true;
     setStatus('loading');
-    Promise.all([fetchStaff(tier), tier === 'AGENT' ? fetchStaff('MANAGER') : Promise.resolve([])])
+    // The manager list only fills the agents' "Reports to" choice, so if it fails the agents still load.
+    const managerList =
+      tier === 'AGENT'
+        ? fetchStaff('MANAGER').catch((managerError: unknown) => {
+            logger.warn('Managers could not be loaded for the agent form.', { error: managerError });
+            return [];
+          })
+        : Promise.resolve([]);
+    Promise.all([fetchStaff(tier), managerList])
       .then(([list, managerList]) => {
         if (!active) return;
         setMembers(list);
@@ -78,40 +86,21 @@ export function useStaffDirectory(tier: StaffTier) {
     [members]
   );
 
-  /** Optimistic toggle; rolls back with the server's message if the change is refused. */
-  const toggleActive = useCallback(
-    async (member: StaffMember) => {
-      const previous = members;
-      setMembers(members.map((item) => (item.id === member.id ? { ...item, active: !item.active } : item)));
-      setPendingIds((current) => new Set(current).add(member.id));
-      setError(null);
-      try {
-        await setStaffActive(member.id, !member.active);
-      } catch (toggleError) {
-        setMembers(previous);
-        setError(toMessage(toggleError));
-      } finally {
-        setPendingIds((current) => new Set([...current].filter((id) => id !== member.id)));
-      }
-    },
-    [members]
-  );
-
   /** Returns an error message, or null on success. */
   const create = useCallback(async (input: NewStaffInput): Promise<string | null> => {
     try {
-      const created = await createStaffMember(input);
+      const created = await createStaffMember(tier, input);
       if (created) setMembers((current) => [...current, created].sort((a, b) => a.fullName.localeCompare(b.fullName)));
       return null;
     } catch (createError) {
       return toMessage(createError);
     }
-  }, []);
+  }, [tier]);
 
   /** Returns an error message, or null on success. */
   const update = useCallback(async (id: string, input: UpdateStaffInput): Promise<string | null> => {
     try {
-      const updated = await updateStaffMember(id, input);
+      const updated = await updateStaffMember(tier, id, input);
       if (updated) {
         setMembers((current) =>
           current.map((member) => (member.id === id ? updated : member)).sort((a, b) => a.fullName.localeCompare(b.fullName))
@@ -121,7 +110,21 @@ export function useStaffDirectory(tier: StaffTier) {
     } catch (updateError) {
       return toMessage(updateError);
     }
-  }, []);
+  }, [tier]);
+
+  /** Deletes the account; the row stays (with the server's message shown) if the server refuses. */
+  const remove = useCallback(async (member: StaffMember) => {
+    setPendingIds((current) => new Set(current).add(member.id));
+    setError(null);
+    try {
+      await deleteStaffMember(tier, member.id);
+      setMembers((current) => current.filter((item) => item.id !== member.id));
+    } catch (deleteError) {
+      setError(toMessage(deleteError));
+    } finally {
+      setPendingIds((current) => new Set([...current].filter((id) => id !== member.id)));
+    }
+  }, [tier]);
 
   const reload = useCallback(() => setLoadCount((value) => value + 1), []);
 
@@ -139,9 +142,9 @@ export function useStaffDirectory(tier: StaffTier) {
     setSearch,
     setDomain,
     setStatusFilter,
-    toggleActive,
     create,
     update,
+    remove,
     reload
   };
 }

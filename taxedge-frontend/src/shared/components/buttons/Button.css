@@ -84,7 +84,7 @@
 }
 
 .tx-button--danger:hover:not(:disabled) {
-  background-color: #b91c1c;
+  background-color: var(--tx-error-strong);
 }
 
 .tx-button--danger:focus-visible {

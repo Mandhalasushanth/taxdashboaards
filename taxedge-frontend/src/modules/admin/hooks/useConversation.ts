@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { defaultMessageFor, isApiError } from '@/core/api';
 import { logger } from '@/core/logging/logger';
-import { fetchConversation, markConversationRead, sendStaffMessage } from '../api/adminCommunicationApi';
-import type { ChatMessage, StaffContact } from '../shared/communication.types';
+import type { ChatMessage, MessagingApi, StaffContact } from '../shared/communication.types';
 import { validateMessageBody } from '../validation/communicationSchema';
 
 /** How often the open conversation checks for new messages while the page is visible. */
@@ -38,8 +37,12 @@ function toMessage(error: unknown): string {
   return defaultMessageFor('UNKNOWN');
 }
 
-/** Loads and sends messages for one staff member, marking their messages read when opened. */
-export function useConversation(contact: StaffContact | null, { onRead, onSent }: ConversationCallbacks): ConversationController {
+/** Loads and sends messages for one contact, marking their messages read when opened. */
+export function useConversation(
+  api: MessagingApi,
+  contact: StaffContact | null,
+  { onRead, onSent }: ConversationCallbacks
+): ConversationController {
   const contactId = contact?.id ?? null;
   const [messages, setMessages] = useState<readonly DisplayMessage[]>([]);
   const [status, setStatus] = useState<ConversationStatus>('idle');
@@ -61,7 +64,7 @@ export function useConversation(contact: StaffContact | null, { onRead, onSent }
         setStatus('loading');
       }
       try {
-        const result = await fetchConversation(contactId);
+        const result = await api.fetchConversation(contactId);
         if (!active) {
           return;
         }
@@ -70,7 +73,7 @@ export function useConversation(contact: StaffContact | null, { onRead, onSent }
         setStatus('ready');
         if (unreadRef.current > 0) {
           onRead(contactId);
-          await markConversationRead(contactId);
+          await api.markRead(contactId);
         }
       } catch (loadError) {
         if (active) {
@@ -89,7 +92,7 @@ export function useConversation(contact: StaffContact | null, { onRead, onSent }
       active = false;
       window.clearInterval(timer);
     };
-  }, [contactId, loadCount, onRead]);
+  }, [api, contactId, loadCount, onRead]);
 
   const send = useCallback(
     async (body: string): Promise<boolean> => {
@@ -102,7 +105,7 @@ export function useConversation(contact: StaffContact | null, { onRead, onSent }
         id: `pending-${Date.now()}`,
         body: body.trim(),
         sentAt: new Date().toISOString(),
-        fromAdmin: true,
+        fromMe: true,
         read: false,
         pending: true
       };
@@ -110,7 +113,7 @@ export function useConversation(contact: StaffContact | null, { onRead, onSent }
       setSending(true);
       setError(null);
       try {
-        const stored = await sendStaffMessage(contactId, body);
+        const stored = await api.send(contactId, body);
         setMessages((current) => current.map((message) => (message.id === draft.id ? stored : message)));
         onSent(contactId, stored);
         return true;
@@ -122,7 +125,7 @@ export function useConversation(contact: StaffContact | null, { onRead, onSent }
         setSending(false);
       }
     },
-    [contactId, onSent, sending]
+    [api, contactId, onSent, sending]
   );
 
   const reload = useCallback(() => setLoadCount((count) => count + 1), []);

@@ -35,3 +35,8 @@
 .tx-contact-avatar--green {
   background-color: var(--tx-success);
 }
+
+/* The administrator, as seen from manager and agent workspaces. */
+.tx-contact-avatar--purple {
+  background-color: var(--tx-accent-purple);
+}

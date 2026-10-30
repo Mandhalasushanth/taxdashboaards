@@ -16,6 +16,7 @@ export type AdminSectionId =
   | 'services'
   | 'revenue'
   | 'reports'
+  | 'audit'
   | 'communication'
   | 'notifications'
   | 'settings';
@@ -48,6 +49,7 @@ export const ADMIN_NAV_ITEMS: readonly AdminNavItem[] = Object.freeze([
     path: ROUTE_PATHS.adminApplications,
     iconName: 'file-spreadsheet',
     description: 'Track every customer application across CA and loan services.',
+    /** Badge: applications still waiting for an agent. */
     counterKey: 'applications'
   },
   {
@@ -80,10 +82,10 @@ export const ADMIN_NAV_ITEMS: readonly AdminNavItem[] = Object.freeze([
   },
   {
     id: 'revenue',
-    label: 'Revenue',
+    label: 'Financial Dashboard',
     path: ROUTE_PATHS.adminRevenue,
-    iconName: 'credit-card',
-    description: 'Payments collected and outstanding across services.'
+    iconName: 'trending-up',
+    description: 'Today’s, monthly and yearly revenue by service, pending payments and revenue per staff member.'
   },
   {
     id: 'reports',
@@ -91,6 +93,13 @@ export const ADMIN_NAV_ITEMS: readonly AdminNavItem[] = Object.freeze([
     path: ROUTE_PATHS.adminReports,
     iconName: 'bar-chart',
     description: 'Operational and financial reports.'
+  },
+  {
+    id: 'audit',
+    label: 'Audit Logs',
+    path: ROUTE_PATHS.adminAuditLog,
+    iconName: 'shield-check',
+    description: 'Read-only trail of every verification, payment, assignment, status change and intervention.'
   },
   {
     id: 'communication',

@@ -5,7 +5,7 @@ import type { Role, RoleProfile, RoleTier, ServiceDomain, StaffRole, WorkspaceAr
 export const DOMAIN_LABELS: Readonly<Record<ServiceDomain, string>> = Object.freeze({
   GLOBAL: 'All services',
   CA: 'Chartered Accountancy (CA)',
-  LOAN: 'Loans'
+  LOAN: 'Loans & Insurance'
 });
 
 export const TIER_LABELS: Readonly<Record<RoleTier, string>> = Object.freeze({
@@ -22,6 +22,7 @@ export const ROLE_PROFILES: Readonly<Record<Role, RoleProfile>> = Object.freeze(
     area: 'admin',
     domain: 'GLOBAL',
     tier: 'ADMINISTRATOR',
+    workspaceRoot: ROUTE_PATHS.adminRoot,
     landingRoute: ROUTE_PATHS.adminDashboard,
     dashboardTitle: 'Admin Dashboard',
     dashboardSummary: 'Provision staff accounts, oversee CA and loan operations, and monitor platform activity.'
@@ -32,9 +33,10 @@ export const ROLE_PROFILES: Readonly<Record<Role, RoleProfile>> = Object.freeze(
     area: 'staff',
     domain: 'CA',
     tier: 'MANAGER',
-    landingRoute: ROUTE_PATHS.staffDashboard,
+    workspaceRoot: ROUTE_PATHS.caManagerRoot,
+    landingRoute: `${ROUTE_PATHS.caManagerRoot}/dashboard`,
     dashboardTitle: 'CA Manager Dashboard',
-    dashboardSummary: 'Assign CA cases to your agents, review filings, and track compliance deadlines.'
+    dashboardSummary: 'Verify GST, ITR and incorporation applications, request payment, assign CA agents and track delivery.'
   },
   CA_AGENT: {
     role: 'CA_AGENT',
@@ -42,9 +44,10 @@ export const ROLE_PROFILES: Readonly<Record<Role, RoleProfile>> = Object.freeze(
     area: 'staff',
     domain: 'CA',
     tier: 'AGENT',
-    landingRoute: ROUTE_PATHS.staffDashboard,
+    workspaceRoot: ROUTE_PATHS.caAgentRoot,
+    landingRoute: `${ROUTE_PATHS.caAgentRoot}/dashboard`,
     dashboardTitle: 'CA Agent Dashboard',
-    dashboardSummary: 'Work through your assigned CA cases, collect documents, and update filing status.'
+    dashboardSummary: 'Check and download the documents of your assigned cases, do the portal work and deliver the result.'
   },
   LOAN_MANAGER: {
     role: 'LOAN_MANAGER',
@@ -52,9 +55,10 @@ export const ROLE_PROFILES: Readonly<Record<Role, RoleProfile>> = Object.freeze(
     area: 'staff',
     domain: 'LOAN',
     tier: 'MANAGER',
-    landingRoute: ROUTE_PATHS.staffDashboard,
+    workspaceRoot: ROUTE_PATHS.loanManagerRoot,
+    landingRoute: `${ROUTE_PATHS.loanManagerRoot}/dashboard`,
     dashboardTitle: 'Loan Manager Dashboard',
-    dashboardSummary: 'Distribute loan applications to your agents, approve evaluations, and monitor disbursals.'
+    dashboardSummary: 'Verify loan and insurance applications, request payment, assign loan agents and track delivery.'
   },
   LOAN_AGENT: {
     role: 'LOAN_AGENT',
@@ -62,9 +66,10 @@ export const ROLE_PROFILES: Readonly<Record<Role, RoleProfile>> = Object.freeze(
     area: 'staff',
     domain: 'LOAN',
     tier: 'AGENT',
-    landingRoute: ROUTE_PATHS.staffDashboard,
+    workspaceRoot: ROUTE_PATHS.loanAgentRoot,
+    landingRoute: `${ROUTE_PATHS.loanAgentRoot}/dashboard`,
     dashboardTitle: 'Loan Agent Dashboard',
-    dashboardSummary: 'Process your assigned loan applications, verify documents, and update application status.'
+    dashboardSummary: 'Check and download the documents of your assigned cases, do the lender or insurer portal work and deliver the result.'
   }
 });
 

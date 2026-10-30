@@ -19,6 +19,17 @@
   --tx-error-light: #FDEBEB;
   --tx-warning: #F59E0B;
   --tx-warning-light: #FEF3C7;
+  /* Readable amber for warning text on light surfaces. */
+  --tx-warning-strong: #B45309;
+  --tx-success-strong: #15803D;
+  --tx-success-border: #BBF7D0;
+  --tx-error-strong: #B91C1C;
+  --tx-error-border: #FECACA;
+  --tx-info-border: #BFDBFE;
+  --tx-info-surface-strong: #DBEAFE;
+  --tx-highlight: #FEF08A;
+  --tx-accent-purple: #7E22CE;
+  --tx-accent-purple-light: #F3E8FF;
 
   /* Special */
   --tx-navy-dark: #052750;

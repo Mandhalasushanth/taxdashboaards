@@ -21,10 +21,15 @@ describe('loginSchema', () => {
     expect(validateLoginField('username', '.leadingdot')).toMatch(/may only contain/);
   });
 
-  it('accepts provisioned username formats', () => {
-    expect(validateLoginField('username', 'ca.manager.demo')).toBeNull();
-    expect(validateLoginField('username', 'priya@taxedge.in')).toBeNull();
-    expect(validateLoginField('username', '  admin.demo  ')).toBeNull();
+  it('accepts emails ending in admin@gmail.com, manager@gmail.com or agent@gmail.com', () => {
+    expect(validateLoginField('username', 'admin@gmail.com')).toBeNull();
+    expect(validateLoginField('username', 'camanager@gmail.com')).toBeNull();
+    expect(validateLoginField('username', '  LoanAgent@gmail.com  ')).toBeNull();
+  });
+
+  it('rejects emails without one of the three endings', () => {
+    expect(validateLoginField('username', 'priya@taxedge.in')).toMatch(/admin@gmail.com, manager@gmail.com or agent@gmail.com/);
+    expect(validateLoginField('username', 'ca.manager.demo')).toMatch(/admin@gmail.com/);
   });
 
   it('enforces password length without trimming', () => {

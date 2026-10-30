@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Navigate, useLocation, type Location } from 'react-router-dom';
 import { BRAND_ASSETS } from '@/core/config/appConfig';
 import { environment } from '@/core/config/environment';
 import { GeometricBackdrop, InlineAlert, useDocumentTitle } from '@/shared';
+import { ForgotPasswordFlow } from '../components/ForgotPasswordFlow';
 import { LoginForm } from '../components/LoginForm';
 import { SecureAccessHeading } from '../components/SecureAccessHeading';
 import { SESSION_END_NOTICES } from '../shared/constants/authentication.constants';
@@ -26,6 +28,8 @@ export default function LoginPage() {
   const { status, user, endReason } = useAuthentication();
   const controller = useLoginForm();
   const location = useLocation();
+  const [resetting, setResetting] = useState(false);
+  const [passwordUpdated, setPasswordUpdated] = useState(false);
 
   if (status === 'authenticated' && user) {
     return <Navigate to={resolvePostLoginRoute(user, readRequestedPath(location.state))} replace />;
@@ -42,8 +46,33 @@ export default function LoginPage() {
           title="Secure Access"
           subtitle="Sign in with the credentials provided by your administrator."
         />
-        {notice && !controller.formError ? <InlineAlert tone={notice.tone}>{notice.message}</InlineAlert> : null}
-        <LoginForm controller={controller} />
+        {resetting ? (
+          <ForgotPasswordFlow
+            initialEmail={controller.values.username}
+            onBack={() => setResetting(false)}
+            onComplete={(email) => {
+              controller.changeField('username', email);
+              controller.changeField('password', '');
+              setPasswordUpdated(true);
+              setResetting(false);
+            }}
+          />
+        ) : (
+          <>
+            {passwordUpdated && !controller.formError ? (
+              <InlineAlert tone="info" surface="dark">Your password has been reset. Sign in with your new password.</InlineAlert>
+            ) : notice && !controller.formError ? (
+              <InlineAlert tone={notice.tone} surface="dark">{notice.message}</InlineAlert>
+            ) : null}
+            <LoginForm
+              controller={controller}
+              onForgotPassword={() => {
+                setPasswordUpdated(false);
+                setResetting(true);
+              }}
+            />
+          </>
+        )}
         <p className="tx-login-page__footnote">
           Access is limited to accounts provisioned by your {environment.appName} administrator.
         </p>

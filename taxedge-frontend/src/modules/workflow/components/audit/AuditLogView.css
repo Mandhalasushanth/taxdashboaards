@@ -1,0 +1,146 @@
+.tx-audit {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.tx-audit__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--tx-border);
+  border-radius: var(--tx-radius-md);
+  background: var(--tx-surface);
+}
+
+.tx-audit__input,
+.tx-audit__select {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--tx-border);
+  border-radius: var(--tx-radius-md);
+  background: var(--tx-surface);
+  font-size: 0.86rem;
+  color: var(--tx-primary-text);
+}
+
+.tx-audit__input {
+  flex: 1 1 260px;
+}
+
+.tx-audit__input:focus,
+.tx-audit__select:focus {
+  border-color: var(--tx-primary-blue);
+  outline: none;
+  box-shadow: var(--tx-focus-ring);
+}
+
+.tx-audit__card {
+  overflow-x: auto;
+  border: 1px solid var(--tx-border);
+  border-radius: var(--tx-radius-md);
+  background: var(--tx-surface);
+  box-shadow: var(--tx-shadow-sm);
+}
+
+.tx-audit__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+  text-align: left;
+}
+
+.tx-audit__table th {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--tx-border);
+  background: var(--tx-background);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tx-secondary-text);
+  white-space: nowrap;
+}
+
+.tx-audit__table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--tx-subtle-border);
+  color: var(--tx-primary-text);
+  vertical-align: top;
+}
+
+.tx-audit__actor {
+  display: block;
+  font-weight: 600;
+}
+
+.tx-audit__role {
+  font-size: 0.74rem;
+  color: var(--tx-secondary-text);
+}
+
+.tx-audit__mono {
+  font-family: var(--tx-font-mono);
+  font-size: 0.8rem;
+}
+
+.tx-audit__note {
+  max-width: 320px;
+  overflow-wrap: anywhere;
+}
+
+.tx-audit__ref {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--tx-font-mono);
+  font-size: 0.74rem;
+  color: var(--tx-success);
+}
+
+@media (max-width: 768px) {
+  .tx-audit__table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .tx-audit__table,
+  .tx-audit__table tbody,
+  .tx-audit__table tr,
+  .tx-audit__table td {
+    display: block;
+    width: 100%;
+  }
+
+  .tx-audit__table tr {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--tx-border);
+  }
+
+  .tx-audit__table td {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 4px 0;
+    border-bottom: none;
+    text-align: right;
+  }
+
+  .tx-audit__table td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--tx-muted-text);
+    text-align: left;
+  }
+
+  .tx-audit__note {
+    max-width: none;
+  }
+}

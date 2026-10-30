@@ -20,10 +20,11 @@ export function hasPermission(subject: AccessSubject | null, permission: Permiss
   return subject !== null && subject.permissions.includes(permission);
 }
 
-/** Whether an in-app path belongs to the workspace area this subject is allowed to enter. */
+const isInside = (path: string, root: string) => path === root || path.startsWith(`${root}/`) || path.startsWith(`${root}?`);
+
+/** Whether an in-app path belongs to this subject's own workspace and the server granted its area permission. */
 export function canAccessPath(subject: AccessSubject, path: string): boolean {
-  const { area } = getRoleProfile(subject.role);
-  const { rootPath, permission } = AREA_ACCESS[area];
-  const insideArea = path === rootPath || path.startsWith(`${rootPath}/`);
-  return insideArea && hasPermission(subject, permission);
+  const { area, workspaceRoot } = getRoleProfile(subject.role);
+  const { permission } = AREA_ACCESS[area];
+  return isInside(path, workspaceRoot) && hasPermission(subject, permission);
 }

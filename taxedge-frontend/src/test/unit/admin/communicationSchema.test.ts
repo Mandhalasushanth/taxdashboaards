@@ -13,7 +13,7 @@ const contact = {
   role: 'CA_MANAGER',
   email: 'priya@taxedge.in',
   unreadCount: 2,
-  lastMessage: { body: 'Done', sentAt: '2026-10-13T09:00:00Z', fromAdmin: false }
+  lastMessage: { body: 'Done', sentAt: '2026-10-13T09:00:00Z', fromMe: false }
 };
 
 describe('parseContact', () => {
@@ -21,9 +21,14 @@ describe('parseContact', () => {
     expect(parseContact(contact)).toEqual({ ...contact, id: '11' });
   });
 
-  it('rejects administrators and unknown roles, so only the four staff roles can be messaged', () => {
-    expect(parseContact({ ...contact, role: 'ADMIN' })).toBeNull();
+  it('accepts the administrator as a contact (managers and agents message them) but rejects unknown roles', () => {
+    expect(parseContact({ ...contact, role: 'ADMIN' })?.role).toBe('ADMIN');
     expect(parseContact({ ...contact, role: 'CUSTOMER' })).toBeNull();
+  });
+
+  it('reads "sent by me" from fromMe, falling back to the original fromAdmin field', () => {
+    expect(parseContact({ ...contact, lastMessage: { body: 'x', sentAt: '2026-10-13T09:00:00Z', fromAdmin: true } })?.lastMessage?.fromMe).toBe(true);
+    expect(parseContact({ ...contact, lastMessage: { body: 'x', sentAt: '2026-10-13T09:00:00Z', fromMe: false, fromAdmin: true } })?.lastMessage?.fromMe).toBe(false);
   });
 
   it('cleans up bad counts and previews', () => {

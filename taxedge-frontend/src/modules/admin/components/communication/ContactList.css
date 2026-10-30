@@ -153,7 +153,7 @@
 
 .tx-contact--selected,
 .tx-contact--selected:hover {
-  background-color: #f0f6ff;
+  background-color: var(--tx-unread-surface);
 }
 
 .tx-contact--selected::before {
@@ -294,4 +294,9 @@
 
 .tx-contacts__empty-btn:hover {
   background-color: var(--tx-light-blue);
+}
+
+.tx-contact__role--purple {
+  background-color: var(--tx-accent-purple-light);
+  color: var(--tx-accent-purple);
 }

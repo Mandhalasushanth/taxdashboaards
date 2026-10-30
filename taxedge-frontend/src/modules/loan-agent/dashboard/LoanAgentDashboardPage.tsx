@@ -1,27 +1,21 @@
-import { AccountOverview, DOMAIN_LABELS, ROLE_PROFILES, TIER_LABELS, useCurrentUser } from '@/modules/authentication';
-import { PageHeader, RoleBadge, useDocumentTitle } from '@/shared';
-import { LOAN_AGENT_MODULE_ROLE } from '../shared/loanAgent.config';
+import { AccountOverview, useAuthentication } from '@/modules/authentication';
+import { RoleDashboardView } from '@/modules/workflow';
+import { LOAN_AGENT_DASHBOARD } from '../shared/loanAgentDashboard';
 import './LoanAgentDashboardPage.css';
 
-const profile = ROLE_PROFILES[LOAN_AGENT_MODULE_ROLE];
-
+/** Loan Agent landing page: reached only by the LOAN_AGENT role (route guards and, authoritatively, the server). */
 export default function LoanAgentDashboardPage() {
-  const user = useCurrentUser();
-  useDocumentTitle(profile.dashboardTitle);
+  const { user } = useAuthentication();
 
   if (!user) {
     return null;
   }
 
   return (
-    <div className="tx-loan-agent-dashboard">
-      <PageHeader
-        eyebrow={`Welcome back, ${user.displayName}`}
-        title={profile.dashboardTitle}
-        description={profile.dashboardSummary}
-        badge={<RoleBadge areaLabel={DOMAIN_LABELS[profile.domain]} levelLabel={TIER_LABELS[profile.tier]} />}
-      />
-      <AccountOverview user={user} />
-    </div>
+    <RoleDashboardView config={LOAN_AGENT_DASHBOARD}>
+      <div className="tx-loan-agent-dashboard">
+        <AccountOverview user={user} />
+      </div>
+    </RoleDashboardView>
   );
 }

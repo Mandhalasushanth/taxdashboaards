@@ -1,4 +1,6 @@
+import { NotificationsWithPush, recipientsFromCustomers } from '@/modules/push-notifications';
 import { Button, DeferredContent, Icon, LoadingSpinner, useDocumentTitle } from '@/shared';
+import { fetchCustomers } from '../../api/adminCustomersApi';
 import { useAdminNotifications } from '../../hooks/useAdminNotifications';
 import { NotificationList } from './NotificationList';
 import { NotificationsToolbar } from './NotificationsToolbar';
@@ -18,8 +20,16 @@ function emptyCopy(totalCount: number, unreadOnly: boolean): EmptyCopy {
     : { title: 'Nothing in this category', text: 'Try another category to see more notifications.' };
 }
 
-/** Admin "Notifications": filterable, date-grouped list with read, open and dismiss actions. */
+/** Every customer in the directory; the server sends the push to each one's mobile app. */
+const loadAllCustomers = () => fetchCustomers().then(recipientsFromCustomers);
+
+/** Admin "Notifications": the admin's own inbox, plus a tab for push notifications to all customers. */
 export default function NotificationsSection() {
+  return <NotificationsWithPush mode="ADMIN" inbox={<NotificationsInbox />} loadRecipients={loadAllCustomers} />;
+}
+
+/** The admin's inbox: filterable, date-grouped list with read, open and dismiss actions. */
+function NotificationsInbox() {
   useDocumentTitle('Notifications');
   const notifications = useAdminNotifications();
 

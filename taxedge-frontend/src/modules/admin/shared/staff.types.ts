@@ -39,6 +39,8 @@ export interface StaffMember {
   readonly slaPercent: number;
   readonly joinedAt: string;
   readonly lastLoginAt: string | null;
+  /** When an administrator last revealed this account's password; every view is recorded. */
+  readonly passwordViewedAt?: string | null;
 }
 
 export interface NewStaffInput {

@@ -12,6 +12,7 @@ import {
 } from '@/shared';
 import { useStaffDirectory } from '../../hooks/useStaffDirectory';
 import { TIER_LABELS, type StaffDomainFilter, type StaffMember, type StaffStatusFilter, type StaffTier } from '../../shared/staff.types';
+import { StaffDetails } from './StaffDetails';
 import { StaffForm } from './StaffForm';
 import { StaffTable } from './StaffTable';
 import './StaffDirectory.css';
@@ -39,8 +40,17 @@ export function StaffDirectory({ tier, title }: StaffDirectoryProps) {
   const staff = useStaffDirectory(tier);
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState<StaffMember | null>(null);
+  const [viewing, setViewing] = useState<StaffMember | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const labels = TIER_LABELS[tier];
+
+  const openEditor = (member: StaffMember) => {
+    setAdding(false);
+    setViewing(null);
+    setNotice(null);
+    setEditing(member);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   if (staff.status === 'loading') {
     return (
@@ -79,8 +89,9 @@ export function StaffDirectory({ tier, title }: StaffDirectoryProps) {
           <input
             type="search"
             placeholder="Search name, email or ID"
+            maxLength={60}
             value={staff.search}
-            onChange={(event) => staff.setSearch(event.target.value)}
+            onChange={(event) => staff.setSearch(event.target.value.replace(/[<>"'`]/g, '').slice(0, 60))}
           />
         </label>
         <select aria-label="Domain" className="tx-staff-dir__select" value={staff.domain} onChange={(event) => staff.setDomain(event.target.value as StaffDomainFilter)}>
@@ -98,7 +109,7 @@ export function StaffDirectory({ tier, title }: StaffDirectoryProps) {
           ))}
         </select>
         {adding || editing ? null : (
-          <Button iconName="plus" onClick={() => { setAdding(true); setNotice(null); }}>
+          <Button iconName="plus" onClick={() => { setAdding(true); setViewing(null); setNotice(null); }}>
             Add {labels.singular}
           </Button>
         )}
@@ -137,12 +148,28 @@ export function StaffDirectory({ tier, title }: StaffDirectoryProps) {
         />
       ) : null}
 
+      {viewing && !editing ? (
+        <StaffDetails
+          key={viewing.id}
+          member={staff.members.find((member) => member.id === viewing.id) ?? viewing}
+          onClose={() => setViewing(null)}
+        />
+      ) : null}
+
       {staff.visible.length > 0 ? (
-        <StaffTable tier={tier} members={staff.visible} pendingIds={staff.pendingIds} onToggleActive={(member) => void staff.toggleActive(member)}
-          onEdit={(member) => {
+        <StaffTable
+          tier={tier}
+          members={staff.visible}
+          pendingIds={staff.pendingIds}
+          onDelete={(member) => {
+            if (window.confirm(`Delete ${member.fullName}'s account? They will no longer be able to sign in.`)) void staff.remove(member);
+          }}
+          onEdit={openEditor}
+          onView={(member) => {
             setAdding(false);
+            setEditing(null);
             setNotice(null);
-            setEditing(member);
+            setViewing(member);
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
         />

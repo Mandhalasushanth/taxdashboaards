@@ -15,8 +15,14 @@ export const ROUTE_PATHS = Object.freeze({
   adminNotifications: '/admin/notifications',
   adminSettings: '/admin/settings',
   adminProfile: '/admin/profile',
+  adminAuditLog: '/admin/audit-log',
   staffRoot: '/staff',
+  /** Legacy shared staff entry points; they redirect to the signed-in role's own workspace. */
   staffDashboard: '/staff/dashboard',
   staffProfile: '/staff/profile',
+  caManagerRoot: '/staff/ca-manager',
+  caAgentRoot: '/staff/ca-agent',
+  loanManagerRoot: '/staff/loan-manager',
+  loanAgentRoot: '/staff/loan-agent',
   unauthorized: '/unauthorized'
 });

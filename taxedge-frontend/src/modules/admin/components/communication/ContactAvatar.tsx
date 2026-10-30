@@ -1,11 +1,11 @@
 import { toInitials } from '@/core/utils/stringUtils';
-import type { StaffRole } from '@/modules/authentication';
+import type { Role } from '@/modules/authentication';
 import { STAFF_ROLE_THEME } from './config/staffRoleTheme';
 import './ContactAvatar.css';
 
 export interface ContactAvatarProps {
   readonly name: string;
-  readonly role: StaffRole;
+  readonly role: Role;
   readonly size?: 'md' | 'lg';
 }
 

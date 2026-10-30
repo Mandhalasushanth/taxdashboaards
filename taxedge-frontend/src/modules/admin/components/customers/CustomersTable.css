@@ -1,0 +1,210 @@
+.tx-customers-table-card {
+  overflow: hidden;
+  border: 1px solid var(--tx-border);
+  border-radius: var(--tx-radius-md);
+  background: var(--tx-surface);
+  box-shadow: var(--tx-shadow-sm);
+}
+
+.tx-customers-table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tx-customers-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  text-align: left;
+}
+
+.tx-customers-table th {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--tx-border);
+  background: var(--tx-background);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tx-secondary-text);
+  white-space: nowrap;
+}
+
+.tx-customers-table td {
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--tx-subtle-border);
+  color: var(--tx-primary-text);
+  vertical-align: middle;
+}
+
+.tx-customers-table tbody tr:hover td {
+  background: var(--tx-unread-surface);
+}
+
+.tx-customers-table__who {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tx-customers-table__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--tx-light-navy);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--tx-primary-navy);
+}
+
+.tx-customers-table__stack {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tx-customers-table__name {
+  padding: 0;
+  border: none;
+  background: none;
+  font-weight: 700;
+  color: var(--tx-primary-blue);
+  text-align: left;
+  cursor: pointer;
+}
+
+.tx-customers-table__name:hover {
+  text-decoration: underline;
+}
+
+.tx-customers-table__name:focus-visible,
+.tx-customers-table__view:focus-visible {
+  outline: none;
+  border-radius: var(--tx-radius-sm);
+  box-shadow: var(--tx-focus-ring);
+}
+
+.tx-customers-table__muted {
+  font-size: 0.76rem;
+  color: var(--tx-secondary-text);
+}
+
+.tx-customers-table__pan {
+  font-family: var(--tx-font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--tx-primary-navy);
+}
+
+.tx-customers-table__services {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tx-customers-table__counts {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  color: var(--tx-secondary-text);
+}
+
+.tx-customers-table__counts strong {
+  color: var(--tx-primary-navy);
+}
+
+.tx-customers-table__open {
+  padding: 2px 7px;
+  border-radius: var(--tx-radius-full);
+  background: var(--tx-light-orange);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--tx-primary-orange);
+}
+
+.tx-customers-table__view {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--tx-border);
+  border-radius: var(--tx-radius-sm);
+  background: var(--tx-surface);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--tx-primary-navy);
+  cursor: pointer;
+}
+
+.tx-customers-table__view:hover {
+  border-color: var(--tx-primary-blue);
+  background: var(--tx-light-blue);
+  color: var(--tx-primary-blue);
+}
+
+@media (max-width: 768px) {
+  .tx-customers-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .tx-customers-table,
+  .tx-customers-table tbody,
+  .tx-customers-table tr,
+  .tx-customers-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .tx-customers-table tr {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--tx-border);
+  }
+
+  .tx-customers-table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 0;
+    border-bottom: none;
+    text-align: right;
+  }
+
+  .tx-customers-table td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--tx-muted-text);
+    text-align: left;
+  }
+
+  .tx-customers-table__stack {
+    align-items: flex-end;
+  }
+
+  .tx-customers-table__services {
+    justify-content: flex-end;
+  }
+
+  .tx-customers-table__actions::before {
+    content: none;
+  }
+
+  .tx-customers-table__view {
+    width: 100%;
+    justify-content: center;
+    min-height: 40px;
+  }
+}

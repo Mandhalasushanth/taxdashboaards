@@ -30,7 +30,7 @@ function deliveryState(message: DisplayMessage): { icon: 'clock' | 'check' | 'ch
   return message.read ? { icon: 'check-check', label: 'Read' } : { icon: 'check', label: 'Sent' };
 }
 
-/** Chat bubbles grouped by day; the administrator's messages on the right with delivery ticks. */
+/** Chat bubbles grouped by day; the signed-in user's messages on the right with delivery ticks. */
 export function MessageThread({ messages, contactFirstName }: MessageThreadProps) {
   const threadRef = useRef<HTMLDivElement>(null);
   const rows = toRows(messages, new Date());
@@ -61,12 +61,12 @@ export function MessageThread({ messages, contactFirstName }: MessageThreadProps
                 <span>{dayLabel}</span>
               </p>
             ) : null}
-            <div className={message.fromAdmin ? 'tx-thread__row tx-thread__row--mine' : 'tx-thread__row'}>
-              <div className={message.fromAdmin ? 'tx-bubble tx-bubble--mine' : 'tx-bubble'}>
+            <div className={message.fromMe ? 'tx-thread__row tx-thread__row--mine' : 'tx-thread__row'}>
+              <div className={message.fromMe ? 'tx-bubble tx-bubble--mine' : 'tx-bubble'}>
                 <p className="tx-bubble__text">{message.body}</p>
                 <span className="tx-bubble__meta">
                   <time dateTime={message.sentAt}>{formatTime(message.sentAt)}</time>
-                  {message.fromAdmin ? (
+                  {message.fromMe ? (
                     <span className="tx-bubble__status" title={delivery.label}>
                       <Icon name={delivery.icon} size="sm" />
                       <span className="tx-sr-only">{delivery.label}</span>

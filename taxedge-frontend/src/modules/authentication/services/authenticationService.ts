@@ -88,6 +88,10 @@ export async function updateCredentials(updates: AccountCredentialUpdates): Prom
   if (!currentUser) {
     throw new Error('No active user session');
   }
+  // Only the administrator manages sign-in credentials; staff logins are created and reset by the admin.
+  if (currentUser.role !== 'ADMIN') {
+    throw new Error('Only the administrator can change sign-in details.');
+  }
 
   const gateway = await getAuthenticationGateway();
   if (gateway.updateCredentials) {

@@ -27,3 +27,4 @@ export type { SessionEndReason, SessionUser } from './shared/types/session.types
 
 /** Route-level page, lazy-loaded by the router. */
 export const loadLoginPage = () => import('./pages/LoginPage');
+export { LOGIN_EMAIL_ENDINGS, tierForLoginEmail } from './shared/config/loginAccountTypes';

@@ -172,7 +172,7 @@
   width: 72px;
   height: 72px;
   border-radius: var(--tx-radius-full);
-  background: linear-gradient(135deg, var(--tx-light-blue) 0%, #d8e6fe 100%);
+  background: linear-gradient(135deg, var(--tx-light-blue) 0%, var(--tx-info-surface-strong) 100%);
   color: var(--tx-primary-blue);
   box-shadow: 0 4px 12px rgba(11, 94, 215, 0.12);
 }
@@ -214,4 +214,9 @@
   .tx-conversation__back {
     display: inline-flex;
   }
+}
+
+.tx-conversation__role--purple {
+  background-color: var(--tx-accent-purple-light);
+  color: var(--tx-accent-purple);
 }

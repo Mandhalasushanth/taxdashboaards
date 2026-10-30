@@ -1,77 +1,43 @@
 import { ApiError } from '@/core/api';
-import type { StaffRole } from '@/modules/authentication';
+import { openPassword, sealPassword, type PasswordCipher } from './demoPasswordVault';
 import { ROLE_DOMAIN, TIER_ROLES, type NewStaffInput, type StaffMember, type StaffTier, type UpdateStaffInput } from '../shared/staff.types';
 
 /**
- * DEVELOPMENT ONLY. Sample managers and agents kept in this browser's localStorage while the backend
- * is unavailable. Loaded through a dynamic import guarded by `import.meta.env.DEV`; excluded from production.
+ * DEVELOPMENT ONLY. Managers and agents the administrator creates, kept in this browser's localStorage
+ * while the backend is unavailable. It starts empty: there are no predefined staff. Loaded through a dynamic import guarded by `import.meta.env.DEV`; excluded from production.
  *
  * Passwords an administrator sets are stored only as a salted SHA-256 hash (the real backend uses a slow
  * hash such as BCrypt). The demo sign-in reads these records from the same storage key, so accounts
  * created or edited here can sign in. Hashes are never returned to the page.
  */
-export const DEMO_STAFF_STORAGE_KEY = 'taxedge.demo.adminStaff';
+export const DEMO_STAFF_STORAGE_KEY = 'taxedge.demo.adminStaff.v2';
 const STORAGE_KEY = DEMO_STAFF_STORAGE_KEY;
-const DAY = 86_400_000;
-
-type Seed = [id: string, name: string, username: string, role: StaffRole, managerId: string | null, active: boolean, open: number, done: number, sla: number, joinedDaysAgo: number, lastLoginHoursAgo: number | null];
-
-const SEEDS: readonly Seed[] = [
-  ['MGR-101', 'Sanjay Verma', 'camanager@gmail.com', 'CA_MANAGER', null, true, 18, 64, 96, 540, 2],
-  ['MGR-102', 'Neha Kulkarni', 'neha.kulkarni@taxedge.in', 'CA_MANAGER', null, true, 11, 41, 93, 300, 26],
-  ['MGR-201', 'Ananya Deshmukh', 'loanmanager@gmail.com', 'LOAN_MANAGER', null, true, 9, 27, 89, 420, 5],
-  ['MGR-202', 'Rahul Bansal', 'rahul.bansal@taxedge.in', 'LOAN_MANAGER', null, false, 0, 0, 0, 610, 900],
-  ['AGT-301', 'Suresh Kumar', 'caagent@gmail.com', 'CA_AGENT', 'MGR-101', true, 14, 52, 93, 400, 1],
-  ['AGT-302', 'Priya Sharma', 'priya.sharma@taxedge.in', 'CA_AGENT', 'MGR-101', true, 12, 57, 95, 380, 3],
-  ['AGT-303', 'Imran Qureshi', 'imran.qureshi@taxedge.in', 'CA_AGENT', 'MGR-102', true, 9, 33, 88, 120, 30],
-  ['AGT-401', 'Rajesh Patel', 'loanagent@gmail.com', 'LOAN_AGENT', 'MGR-201', true, 8, 19, 87, 260, 4],
-  ['AGT-402', 'Kavita Iyer', 'kavita.iyer@taxedge.in', 'LOAN_AGENT', 'MGR-201', true, 6, 22, 91, 210, 20],
-  ['AGT-403', 'Deepak Joshi', 'deepak.joshi@taxedge.in', 'LOAN_AGENT', 'MGR-201', false, 0, 3, 72, 90, 700]
-];
-
-function seed(): StaffMember[] {
-  const now = Date.now();
-  const names = new Map(SEEDS.map(([id, name]) => [id, name]));
-  return SEEDS.map(([id, fullName, username, role, managerId, active, openCases, completedThisMonth, slaPercent, joined, login]) => ({
-    id,
-    fullName,
-    username,
-    role,
-    managerId,
-    managerName: managerId ? (names.get(managerId) ?? null) : null,
-    active,
-    openCases,
-    completedThisMonth,
-    slaPercent,
-    joinedAt: new Date(now - joined * DAY).toISOString(),
-    lastLoginAt: login === null ? null : new Date(now - login * 3_600_000).toISOString()
-  }));
-}
 
 /** What is persisted: the public record plus the password hash, when one has been set. */
-type StoredStaff = StaffMember & { readonly salt?: string; readonly passwordHash?: string };
+type StoredStaff = StaffMember & { readonly salt?: string; readonly passwordHash?: string; readonly passwordCipher?: PasswordCipher };
 
 async function hashPassword(salt: string, password: string): Promise<string> {
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${salt}:${password}`));
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
-async function credentialFor(password: string): Promise<{ salt: string; passwordHash: string }> {
+/** Sign-in checks the hash; the sealed copy exists only so the administrator can view the password. */
+async function credentialFor(password: string): Promise<{ salt: string; passwordHash: string; passwordCipher: PasswordCipher }> {
   const salt = Array.from(crypto.getRandomValues(new Uint8Array(16)), (byte) => byte.toString(16).padStart(2, '0')).join('');
-  return { salt, passwordHash: await hashPassword(salt, password) };
+  return { salt, passwordHash: await hashPassword(salt, password), passwordCipher: await sealPassword(password) };
 }
 
 /** Strips credential fields so they never leave the store. */
-function toPublic({ salt: _salt, passwordHash: _hash, ...member }: StoredStaff): StaffMember {
+function toPublic({ salt: _salt, passwordHash: _hash, passwordCipher: _cipher, ...member }: StoredStaff): StaffMember {
   return member;
 }
 
 function load(): StoredStaff[] {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as StoredStaff[]) : persist(seed());
+    return raw ? (JSON.parse(raw) as StoredStaff[]) : [];
   } catch {
-    return seed();
+    return [];
   }
 }
 
@@ -101,7 +67,7 @@ export const demoStaffStore = Object.freeze({
     const prefix = input.role.endsWith('MANAGER') ? 'MGR' : 'AGT';
     const created: StoredStaff = {
       ...(await credentialFor(input.password)),
-      id: `${prefix}-${Date.now().toString(36).toUpperCase()}`,
+      id: `${prefix}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
       fullName: input.fullName.trim(),
       username,
       role: input.role,
@@ -145,6 +111,17 @@ export const demoStaffStore = Object.freeze({
     // Keep agents' "Reports to" name in step when a manager is renamed.
     persist(items.map((member) => (member.id === id ? updated : member.managerId === id ? { ...member, managerName: fullName } : member)));
     return toPublic(updated);
+  },
+
+  /** Administrator only (the admin console is the only caller). Records the view on the account. */
+  async revealPassword(id: string): Promise<string | null> {
+    const items = load();
+    const current = items.find((member) => member.id === id) ?? fail('This account no longer exists.');
+    const password = current.passwordCipher ? await openPassword(current.passwordCipher) : null;
+    if (password !== null) {
+      persist(items.map((member) => (member.id === id ? { ...member, passwordViewedAt: new Date().toISOString() } : member)));
+    }
+    return password;
   },
 
   async setActive(id: string, active: boolean): Promise<void> {

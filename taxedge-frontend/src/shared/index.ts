@@ -10,7 +10,6 @@ export { StatusMessage } from './components/feedback/StatusMessage';
 export { TextField, type TextFieldProps } from './components/forms/TextField';
 export { Icon, type IconName } from './components/icons/Icon';
 export { GeometricBackdrop } from './components/layout/GeometricBackdrop';
-export { PageHeader } from './components/layout/PageHeader';
 export { BrandLockup } from './components/navigation/BrandLockup';
 export { HeaderIconLink } from './components/navigation/HeaderIconLink';
 export { Topbar } from './components/navigation/Topbar';
@@ -22,3 +21,9 @@ export { ProgressBar } from './components/data-display/ProgressBar';
 export { StatusBadge, type BadgeTone } from './components/data-display/StatusBadge';
 export { EmptyState } from './components/feedback/EmptyState';
 export { InputField, SelectField, TextAreaField } from './components/forms/FormControls';
+export {
+  WorkspaceSidebar,
+  type WorkspaceNavEntry,
+  type WorkspaceNavGroup,
+  type WorkspaceSidebarProps
+} from './components/navigation/WorkspaceSidebar';

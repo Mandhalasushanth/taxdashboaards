@@ -3,15 +3,19 @@ import { environment } from '@/core/config/environment';
 import { formatDateTime } from '@/core/utils/dateUtils';
 import { humanizeConstant, toInitials } from '@/core/utils/stringUtils';
 import {
-  deriveDisplayNameFromUsername,
   DOMAIN_LABELS,
   getRoleProfile,
+  LOGIN_EMAIL_ENDINGS,
   TIER_LABELS,
+  tierForLoginEmail,
   updateCredentials,
   useAuthentication,
   verifyCurrentPassword
 } from '@/modules/authentication';
 import { Button, Icon, SignOutModal, useDocumentTitle } from '@/shared';
+import { emailFormat } from '../../validation/indianFormats';
+import { passwordPolicyError } from '../../validation/staffSchema';
+import { RevealablePasswordInput } from './RevealablePasswordInput';
 import './ProfileSection.css';
 
 /**
@@ -46,7 +50,7 @@ export default function ProfileSection() {
   const handleCredentialsSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!currentPassword) {
-      setFeedback({ message: 'Current password is required to verify your identity.', type: 'error' });
+      setFeedback({ message: 'Old password is required to verify your identity.', type: 'error' });
       return;
     }
 
@@ -58,7 +62,7 @@ export default function ProfileSection() {
       const isCurrentPasswordValid = await verifyCurrentPassword(currentPassword);
       if (!isCurrentPasswordValid) {
         setFeedback({
-          message: 'Current password is incorrect. It must match your login password.',
+          message: 'Old password is incorrect. It must match your login password.',
           type: 'error'
         });
         setSubmittingCredentials(false);
@@ -71,7 +75,7 @@ export default function ProfileSection() {
 
       if (!isUsernameChanged && !isPasswordChanged) {
         setFeedback({
-          message: 'No changes entered. Please update your username or enter a new password.',
+          message: 'No changes entered. Please change your email or enter a new password.',
           type: 'error'
         });
         setSubmittingCredentials(false);
@@ -79,20 +83,31 @@ export default function ProfileSection() {
       }
 
       if (isPasswordChanged) {
-        if (newPassword.length < 8) {
-          setFeedback({ message: 'New password must be at least 8 characters.', type: 'error' });
+        const policyError = passwordPolicyError(newPassword);
+        if (policyError) {
+          setFeedback({ message: `New password: ${policyError}`, type: 'error' });
+          setSubmittingCredentials(false);
+          return;
+        }
+        if (!confirmNewPassword) {
+          setFeedback({ message: 'Please confirm your new password.', type: 'error' });
           setSubmittingCredentials(false);
           return;
         }
         if (newPassword !== confirmNewPassword) {
-          setFeedback({ message: 'New passwords do not match.', type: 'error' });
+          setFeedback({ message: 'New password and confirm password do not match.', type: 'error' });
           setSubmittingCredentials(false);
           return;
         }
       }
 
-      if (isUsernameChanged && trimmedUsername.length < 3) {
-        setFeedback({ message: 'Username must be at least 3 characters.', type: 'error' });
+      // The login page signs in as admin only for emails ending in admin@gmail.com.
+      const usernameError = isUsernameChanged
+        ? emailFormat(trimmedUsername) ??
+          (tierForLoginEmail(trimmedUsername) === 'ADMINISTRATOR' ? null : `Must end with ${LOGIN_EMAIL_ENDINGS.ADMINISTRATOR}.`)
+        : null;
+      if (usernameError) {
+        setFeedback({ message: `Email: ${usernameError}`, type: 'error' });
         setSubmittingCredentials(false);
         return;
       }
@@ -114,8 +129,9 @@ export default function ProfileSection() {
         setConfirmNewPassword('');
         setFeedback(null);
       }, 1300);
-    } catch {
-      setFeedback({ message: 'Failed to update credentials. Please try again.', type: 'error' });
+    } catch (error) {
+      const message = error instanceof Error && error.message ? error.message : 'Please try again.';
+      setFeedback({ message: `Failed to update credentials. ${message}`, type: 'error' });
     } finally {
       setSubmittingCredentials(false);
     }
@@ -126,6 +142,8 @@ export default function ProfileSection() {
   }
 
   const initials = toInitials(user.displayName);
+  // Sign-in credentials are created and changed only by the administrator; other roles never see them.
+  const isAdmin = user.role === 'ADMIN';
   const domainLabel = DOMAIN_LABELS[profile.domain];
   const tierLabel = TIER_LABELS[profile.tier];
 
@@ -150,10 +168,12 @@ export default function ProfileSection() {
                 <span>{profile.label}</span>
               </span>
             </div>
-            <p className="tx-profile-hero__email">
-              <Icon name="mail" size="sm" />
-              <span>{user.username}</span>
-            </p>
+            {isAdmin ? (
+              <p className="tx-profile-hero__email">
+                <Icon name="mail" size="sm" />
+                <span>{user.username}</span>
+              </p>
+            ) : null}
           </div>
 
           <div className="tx-profile-hero__actions">
@@ -189,19 +209,21 @@ export default function ProfileSection() {
                 <code className="tx-profile-code">{user.id}</code>
               </dd>
             </div>
-            <div className="tx-profile-data-item">
-              <dt>Login Username / Email</dt>
-              <dd className="tx-profile-verified-email">
-                <span>{user.username}</span>
-                <span className="tx-profile-verified-pill">
-                  <Icon name="check" size="sm" />
-                  <span>Verified</span>
-                </span>
-                <Button variant="secondary" iconName="user" onClick={openCredentialsModal}>
-                  Edit
-                </Button>
-              </dd>
-            </div>
+            {isAdmin ? (
+              <div className="tx-profile-data-item">
+                <dt>Login Username / Email</dt>
+                <dd className="tx-profile-verified-email">
+                  <span>{user.username}</span>
+                  <span className="tx-profile-verified-pill">
+                    <Icon name="check" size="sm" />
+                    <span>Verified</span>
+                  </span>
+                  <Button variant="secondary" iconName="user" onClick={openCredentialsModal}>
+                    Edit
+                  </Button>
+                </dd>
+              </div>
+            ) : null}
             <div className="tx-profile-data-item">
               <dt>Full Name</dt>
               <dd>{user.displayName}</dd>
@@ -236,15 +258,6 @@ export default function ProfileSection() {
             </div>
           </div>
           <dl className="tx-profile-data-list">
-            <div className="tx-profile-data-item">
-              <dt>Password Credential</dt>
-              <dd className="tx-profile-password-row">
-                <span>••••••••••••</span>
-                <Button variant="secondary" iconName="lock" onClick={openCredentialsModal}>
-                  Change
-                </Button>
-              </dd>
-            </div>
             <div className="tx-profile-data-item">
               <dt>Last Signed In</dt>
               <dd>{formatDateTime(user.lastLoginAt)}</dd>
@@ -304,7 +317,7 @@ export default function ProfileSection() {
       </div>
 
       {/* Change Credentials Dialog */}
-      {credentialsModalOpen ? (
+      {isAdmin && credentialsModalOpen ? (
         <div className="tx-password-modal" role="dialog" aria-modal="true" aria-labelledby="tx-credentials-title">
           <div className="tx-password-modal__backdrop" onClick={() => setCredentialsModalOpen(false)} aria-hidden="true" />
           <div className="tx-password-dialog">
@@ -326,53 +339,52 @@ export default function ProfileSection() {
                 </div>
               ) : null}
               <div className="tx-password-field">
-                <label htmlFor="tx-current-pwd">Current Login Password (Required)</label>
-                <input
-                  id="tx-current-pwd"
-                  type="password"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  placeholder="Enter current password to verify identity"
-                  required
-                />
-              </div>
-              <div className="tx-password-field">
-                <label htmlFor="tx-edit-username">Login Username / Email</label>
+                <label htmlFor="tx-edit-username">Email</label>
                 <input
                   id="tx-edit-username"
-                  type="text"
+                  type="email"
                   value={editUsername}
                   onChange={(e) => setEditUsername(e.target.value)}
-                  placeholder="e.g. admin@gmail.com"
+                  placeholder="Enter your email, e.g. admin@gmail.com"
+                  autoComplete="username"
                   required
                 />
-                <span className="tx-password-field__preview">
-                  Name derived from email: <strong>{deriveDisplayNameFromUsername(editUsername) || '(None)'}</strong>
-                </span>
               </div>
               <div className="tx-password-field">
-                <label htmlFor="tx-new-pwd">New Password (Optional)</label>
-                <input
-                  id="tx-new-pwd"
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Leave empty to keep existing password"
+                <label htmlFor="tx-current-pwd">Old Password</label>
+                <RevealablePasswordInput
+                  id="tx-current-pwd"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="Enter your old password"
+                  autoComplete="current-password"
+                  required
                 />
               </div>
-              {newPassword ? (
-                <div className="tx-password-field">
-                  <label htmlFor="tx-confirm-pwd">Confirm New Password</label>
-                  <input
-                    id="tx-confirm-pwd"
-                    type="password"
-                    value={confirmNewPassword}
-                    onChange={(e) => setConfirmNewPassword(e.target.value)}
-                    placeholder="Re-enter new password"
-                    required
-                  />
-                </div>
-              ) : null}
+              <div className="tx-password-field">
+                <label htmlFor="tx-new-pwd">New Password</label>
+                <RevealablePasswordInput
+                  id="tx-new-pwd"
+                  value={newPassword}
+                  onChange={(e) => {
+                    setNewPassword(e.target.value);
+                    if (!e.target.value) setConfirmNewPassword('');
+                  }}
+                  placeholder="Enter new password (leave empty to keep the old one)"
+                  autoComplete="new-password"
+                />
+              </div>
+              <div className="tx-password-field">
+                <label htmlFor="tx-confirm-pwd">Confirm Password</label>
+                <RevealablePasswordInput
+                  id="tx-confirm-pwd"
+                  value={confirmNewPassword}
+                  onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  placeholder="Re-enter new password"
+                  autoComplete="new-password"
+                  disabled={!newPassword}
+                />
+              </div>
               <div className="tx-password-dialog__actions">
                 <Button variant="secondary" onClick={() => setCredentialsModalOpen(false)} type="button">
                   Cancel

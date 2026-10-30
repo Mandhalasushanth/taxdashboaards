@@ -8,22 +8,27 @@ function userWith(role: Role, permissions: string[]): SessionUser {
 }
 
 const admin = userWith('ADMIN', ['ADMIN_DASHBOARD_VIEW']);
-const staffRoles: Role[] = ['CA_MANAGER', 'CA_AGENT', 'LOAN_MANAGER', 'LOAN_AGENT'];
 
 describe('landingRouteService', () => {
   it('sends admins to the admin dashboard', () => {
     expect(resolveLandingRoute(admin)).toBe('/admin/dashboard');
   });
 
-  it.each(staffRoles)('sends %s to the staff dashboard', (role) => {
-    expect(resolveLandingRoute(userWith(role, ['STAFF_DASHBOARD_VIEW']))).toBe('/staff/dashboard');
+  it.each([
+    ['CA_MANAGER', '/staff/ca-manager/dashboard'],
+    ['CA_AGENT', '/staff/ca-agent/dashboard'],
+    ['LOAN_MANAGER', '/staff/loan-manager/dashboard'],
+    ['LOAN_AGENT', '/staff/loan-agent/dashboard']
+  ] as const)('sends %s to its own workspace dashboard', (role, path) => {
+    expect(resolveLandingRoute(userWith(role, ['STAFF_DASHBOARD_VIEW']))).toBe(path);
   });
 
-  it('returns to the requested page only inside the user’s own area', () => {
+  it('returns to the requested page only inside the user’s own workspace', () => {
     const agent = userWith('CA_AGENT', ['STAFF_DASHBOARD_VIEW']);
-    expect(resolvePostLoginRoute(agent, '/staff/dashboard?tab=open')).toBe('/staff/dashboard?tab=open');
-    expect(resolvePostLoginRoute(agent, '/admin/dashboard')).toBe('/staff/dashboard');
-    expect(resolvePostLoginRoute(admin, '/staff/dashboard')).toBe('/admin/dashboard');
+    expect(resolvePostLoginRoute(agent, '/staff/ca-agent/tasks?case=CASE-1001')).toBe('/staff/ca-agent/tasks?case=CASE-1001');
+    expect(resolvePostLoginRoute(agent, '/staff/ca-manager/review')).toBe('/staff/ca-agent/dashboard');
+    expect(resolvePostLoginRoute(agent, '/admin/dashboard')).toBe('/staff/ca-agent/dashboard');
+    expect(resolvePostLoginRoute(admin, '/staff/ca-manager/dashboard')).toBe('/admin/dashboard');
   });
 
   it('ignores off-site redirect targets', () => {

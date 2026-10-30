@@ -100,3 +100,76 @@
   opacity: 0.5;
   cursor: progress;
 }
+
+/* Small screens: each member becomes a card; labels come from data-label. */
+@media (max-width: 768px) {
+  .tx-staff-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .tx-staff-table table,
+  .tx-staff-table tbody,
+  .tx-staff-table tr,
+  .tx-staff-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .tx-staff-table tr {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--tx-border);
+  }
+
+  .tx-staff-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .tx-staff-table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 5px 0;
+    border-bottom: none;
+    white-space: normal;
+    text-align: right;
+  }
+
+  .tx-staff-table td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--tx-muted-text);
+    text-align: left;
+  }
+
+  .tx-staff-table td.tx-staff-table__actions {
+    justify-content: flex-end;
+    padding-top: 10px;
+  }
+
+  .tx-staff-table td.tx-staff-table__actions::before {
+    content: none;
+  }
+
+  /* The name cell is the card title: name above email, no label. */
+  .tx-staff-table td[data-label='Name'] {
+    display: block;
+    padding-bottom: 8px;
+    text-align: left;
+  }
+
+  .tx-staff-table td[data-label='Name']::before {
+    content: none;
+  }
+
+  .tx-staff-table__meta {
+    overflow-wrap: anywhere;
+  }
+}

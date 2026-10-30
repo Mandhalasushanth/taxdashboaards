@@ -10,6 +10,7 @@ import './ConversationPanel.css';
 
 export interface ConversationPanelProps {
   readonly contact: StaffContact | null;
+  readonly placeholderText: string;
   readonly conversation: ConversationController;
   /** Mobile only: returns to the staff list. */
   readonly onBack: () => void;
@@ -20,7 +21,7 @@ function firstName(name: string): string {
 }
 
 /** Right pane: staff header with presence, the scrollable message thread, and composer. */
-export function ConversationPanel({ contact, conversation, onBack }: ConversationPanelProps) {
+export function ConversationPanel({ contact, placeholderText, conversation, onBack }: ConversationPanelProps) {
   if (!contact) {
     return (
       <section className="tx-conversation tx-conversation--placeholder" aria-label="Conversation placeholder">
@@ -29,7 +30,7 @@ export function ConversationPanel({ contact, conversation, onBack }: Conversatio
         </span>
         <h2 className="tx-conversation__placeholder-title">Select a conversation</h2>
         <p className="tx-conversation__placeholder-desc">
-          Choose a CA or Loan manager or agent from the directory on the left to view messages and collaborate.
+          {placeholderText}
         </p>
         <div className="tx-conversation__placeholder-hint">
           <Icon name="shield-check" size="sm" />
@@ -44,7 +45,7 @@ export function ConversationPanel({ contact, conversation, onBack }: Conversatio
   return (
     <section className="tx-conversation" aria-label={`Conversation with ${contact.name}`}>
       <header className="tx-conversation__header">
-        <button type="button" className="tx-conversation__back" onClick={onBack} aria-label="Back to staff list">
+        <button type="button" className="tx-conversation__back" onClick={onBack} aria-label="Back to contacts">
           <Icon name="chevron-left" />
         </button>
         <ContactAvatar name={contact.name} role={contact.role} size="lg" />

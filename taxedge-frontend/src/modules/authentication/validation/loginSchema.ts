@@ -1,5 +1,6 @@
 import { composeValidators, matchesPattern, maxLength, minLength, required, type Validator } from '@/shared/validation/commonSchemas';
 import { CREDENTIAL_RULES } from '../shared/constants/authentication.constants';
+import { LOGIN_EMAIL_ENDING_MESSAGE, tierForLoginEmail } from '../shared/config/loginAccountTypes';
 import type { LoginCredentials, LoginField, LoginFieldErrors } from '../shared/types/authentication.types';
 
 const { username: usernameRules, password: passwordRules } = CREDENTIAL_RULES;
@@ -8,7 +9,9 @@ const validateUsername = composeValidators(
   required('Username'),
   minLength('Username', usernameRules.minLength),
   maxLength('Username', usernameRules.maxLength),
-  matchesPattern(usernameRules.pattern, usernameRules.patternMessage)
+  matchesPattern(usernameRules.pattern, usernameRules.patternMessage),
+  // The email ending decides the account type, so an email without one of the three cannot sign in.
+  (value) => (tierForLoginEmail(value) ? null : LOGIN_EMAIL_ENDING_MESSAGE)
 );
 
 const validatePassword = composeValidators(

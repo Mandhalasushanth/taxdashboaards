@@ -22,7 +22,13 @@
   overflow: hidden;
 }
 
+/*
+ * position: relative makes this scroll area the containing block for absolutely positioned descendants
+ * (e.g. .tx-sr-only labels). Without it they are placed against the document, stretch it past the
+ * window and leave a gap under the sidebar.
+ */
 .tx-workspace__content {
+  position: relative;
   display: flex;
   flex: 1;
   flex-direction: column;

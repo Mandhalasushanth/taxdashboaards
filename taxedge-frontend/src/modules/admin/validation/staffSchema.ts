@@ -30,7 +30,8 @@ export function parseStaffMember(raw: unknown): StaffMember | null {
     completedThisMonth: count(raw.completedThisMonth),
     slaPercent: Math.min(100, count(raw.slaPercent)),
     joinedAt: timestamp(raw.joinedAt) ?? new Date(0).toISOString(),
-    lastLoginAt: timestamp(raw.lastLoginAt)
+    lastLoginAt: timestamp(raw.lastLoginAt),
+    passwordViewedAt: timestamp(raw.passwordViewedAt)
   });
 }
 

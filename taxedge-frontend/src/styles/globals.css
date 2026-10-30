@@ -1,7 +1,13 @@
+/*
+ * The app shell is a fixed full-height frame: the sidebar and top bar never move and each page scrolls
+ * inside its own content area. The document itself must never scroll, otherwise anything that escapes
+ * the frame (hidden labels, file inputs, popovers) adds a second scrollbar and a gap under the sidebar.
+ */
 html,
 body {
   height: 100%;
   min-height: 100%;
+  overflow: hidden;
   overscroll-behavior: none;
 }
 

@@ -32,15 +32,34 @@ export interface InputFieldProps {
   readonly label: string;
   readonly value: string;
   readonly onChange: (value: string) => void;
-  readonly type?: 'text' | 'number' | 'email' | 'date' | 'password';
+  readonly type?: 'text' | 'number' | 'email' | 'date' | 'password' | 'tel';
   readonly autoComplete?: string;
   readonly error?: string | null;
-  readonly min?: number;
-  readonly max?: number;
+  readonly min?: number | string;
+  readonly max?: number | string;
   readonly step?: number;
+  readonly placeholder?: string;
+  readonly maxLength?: number;
+  readonly inputMode?: 'text' | 'numeric' | 'email' | 'tel' | 'decimal';
+  readonly required?: boolean;
 }
 
-export function InputField({ id, label, value, onChange, type = 'text', error, min, max, step, autoComplete }: InputFieldProps) {
+export function InputField({
+  id,
+  label,
+  value,
+  onChange,
+  type = 'text',
+  error,
+  min,
+  max,
+  step,
+  autoComplete,
+  placeholder,
+  maxLength,
+  inputMode,
+  required
+}: InputFieldProps) {
   return (
     <FieldFrame id={id} label={label} error={error}>
       <input
@@ -52,6 +71,10 @@ export function InputField({ id, label, value, onChange, type = 'text', error, m
         max={max}
         step={step}
         autoComplete={autoComplete}
+        placeholder={placeholder}
+        maxLength={maxLength}
+        inputMode={inputMode}
+        aria-required={required || undefined}
         aria-invalid={Boolean(error)}
         aria-describedby={describedBy(id, error)}
         onChange={(event) => onChange(event.target.value)}
@@ -104,9 +127,10 @@ export interface TextAreaFieldProps {
   readonly rows?: number;
   readonly maxLength?: number;
   readonly error?: string | null;
+  readonly placeholder?: string;
 }
 
-export function TextAreaField({ id, label, value, onChange, rows = 3, maxLength, error }: TextAreaFieldProps) {
+export function TextAreaField({ id, label, value, onChange, rows = 3, maxLength, error, placeholder }: TextAreaFieldProps) {
   return (
     <FieldFrame id={id} label={label} error={error}>
       <textarea
@@ -115,6 +139,7 @@ export function TextAreaField({ id, label, value, onChange, rows = 3, maxLength,
         value={value}
         rows={rows}
         maxLength={maxLength}
+        placeholder={placeholder}
         aria-invalid={Boolean(error)}
         aria-describedby={describedBy(id, error)}
         onChange={(event) => onChange(event.target.value)}

@@ -1,98 +1,20 @@
-import type { CreateTaskInput, ReviewDecisionInput } from '../shared/caManager.types';
+import type { QueueEntry, ServiceKind } from '@/modules/workflow';
+import { CA_MANAGER_SERVICES } from '../shared/caManager.config';
 
-export interface CaFieldValidation {
-  readonly isValid: boolean;
-  readonly message?: string;
+/** Server case ids and reference numbers: letters, digits and hyphens only. */
+const CASE_ID_PATTERN = /^[A-Za-z0-9-]{3,40}$/;
+
+export function isValidCaseId(value: string | null): value is string {
+  return value !== null && CASE_ID_PATTERN.test(value);
 }
 
-export function validateReviewComments(comments: string): CaFieldValidation {
-  try {
-    const trimmed = comments.trim();
-    if (!trimmed) {
-      return { isValid: false, message: 'Review decision notes or correction items are required.' };
-    }
-    if (trimmed.length < 5) {
-      return { isValid: false, message: 'Review notes must be at least 5 characters to guide the agent.' };
-    }
-    return { isValid: true };
-  } catch {
-    return { isValid: false, message: 'Invalid review comments format.' };
-  }
+/** Accepts only services this workspace owns, so a crafted link cannot widen the queue's scope. */
+export function parseCaManagerService(value: string | null): ServiceKind | null {
+  return CA_MANAGER_SERVICES.find((kind) => kind === value) ?? null;
 }
 
-export function validateTaskTitle(title: string): CaFieldValidation {
-  try {
-    const trimmed = title.trim();
-    if (!trimmed) {
-      return { isValid: false, message: 'Task description/title is required.' };
-    }
-    if (trimmed.length < 3) {
-      return { isValid: false, message: 'Task title must be at least 3 characters.' };
-    }
-    if (trimmed.length > 120) {
-      return { isValid: false, message: 'Task title cannot exceed 120 characters.' };
-    }
-    return { isValid: true };
-  } catch {
-    return { isValid: false, message: 'Invalid task title.' };
-  }
-}
-
-export function validateTaskDueDate(dueDate: string): CaFieldValidation {
-  try {
-    if (!dueDate || !dueDate.trim()) {
-      return { isValid: false, message: 'Target due date is required.' };
-    }
-    const parsed = new Date(dueDate);
-    if (isNaN(parsed.getTime())) {
-      return { isValid: false, message: 'Enter a valid date.' };
-    }
-    return { isValid: true };
-  } catch {
-    return { isValid: false, message: 'Invalid date value.' };
-  }
-}
-
-export function validateDocumentRejection(reason: string): CaFieldValidation {
-  try {
-    const trimmed = reason.trim();
-    if (!trimmed) {
-      return { isValid: false, message: 'A specific deficiency reason is mandatory when rejecting.' };
-    }
-    if (trimmed.length < 5) {
-      return { isValid: false, message: 'Deficiency reason must be at least 5 characters.' };
-    }
-    return { isValid: true };
-  } catch {
-    return { isValid: false, message: 'Invalid rejection reason format.' };
-  }
-}
-
-export function validateTaskForm(input: CreateTaskInput): Record<string, string> {
-  const errors: Record<string, string> = {};
-  try {
-    const titleVal = validateTaskTitle(input.title);
-    if (!titleVal.isValid && titleVal.message) errors.title = titleVal.message;
-
-    const dateVal = validateTaskDueDate(input.dueAt);
-    if (!dateVal.isValid && dateVal.message) errors.dueAt = dateVal.message;
-
-    if (!input.ownerName || !input.ownerName.trim()) {
-      errors.ownerName = 'Assigned owner is required.';
-    }
-  } catch (err) {
-    console.error('Task validation failed:', err);
-  }
-  return errors;
-}
-
-export function validateReviewForm(input: ReviewDecisionInput): Record<string, string> {
-  const errors: Record<string, string> = {};
-  try {
-    const commentVal = validateReviewComments(input.comments);
-    if (!commentVal.isValid && commentVal.message) errors.comments = commentVal.message;
-  } catch (err) {
-    console.error('Review validation failed:', err);
-  }
-  return errors;
+/** Validates deep-link parameters (e.g. from a notification) before they reach a queue. */
+export function parseCaManagerQueueParams(params: URLSearchParams): QueueEntry {
+  const caseId = params.get('case');
+  return { caseId: isValidCaseId(caseId) ? caseId : null, service: parseCaManagerService(params.get('service')) };
 }

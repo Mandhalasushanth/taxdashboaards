@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { defaultMessageFor, isApiError } from '@/core/api';
 import { logger } from '@/core/logging/logger';
-import { ROLE_PROFILES, STAFF_ROLES, type StaffRole } from '@/modules/authentication';
-import { fetchStaffContacts, staffContactsCache } from '../api/adminCommunicationApi';
-import type { ChatMessage, ContactRoleFilter, StaffContact } from '../shared/communication.types';
+import { ROLES, ROLE_PROFILES, type Role } from '@/modules/authentication';
+import type { ChatMessage, ContactRoleFilter, MessagingApi, StaffContact } from '../shared/communication.types';
 import { MAX_SEARCH_LENGTH } from '../validation/communicationSchema';
 
 /** How often the staff list is refreshed while the page is open and visible. */
@@ -41,14 +40,14 @@ function matchesSearch(contact: StaffContact, query: string): boolean {
 
 function countByRole(contacts: readonly StaffContact[]): Record<ContactRoleFilter, number> {
   const perRole = Object.fromEntries(
-    STAFF_ROLES.map((role) => [role, contacts.filter((contact) => contact.role === role).length])
-  ) as Record<StaffRole, number>;
+    ROLES.map((role) => [role, contacts.filter((contact) => contact.role === role).length])
+  ) as Record<Role, number>;
   return { ALL: contacts.length, ...perRole };
 }
 
-/** Staff directory for the Communication page: role tabs, search and live unread counts. */
-export function useStaffContacts(): StaffContactsController {
-  const [cached] = useState(() => staffContactsCache.peek());
+/** Contact directory for a Communication page: role tabs, search and live unread counts. */
+export function useStaffContacts(api: MessagingApi): StaffContactsController {
+  const [cached] = useState(() => api.cache.peek());
   const [contacts, setContacts] = useState<readonly StaffContact[]>(cached ?? []);
   const [status, setStatus] = useState<ContactsStatus>(cached ? 'ready' : 'loading');
   const [error, setError] = useState<string | null>(null);
@@ -60,7 +59,7 @@ export function useStaffContacts(): StaffContactsController {
     let active = true;
     const load = async () => {
       try {
-        const result = await fetchStaffContacts();
+        const result = await api.fetchContacts();
         if (active) {
           setContacts(result);
           setError(null);
@@ -69,7 +68,7 @@ export function useStaffContacts(): StaffContactsController {
       } catch (loadError) {
         if (active) {
           setError(toMessage(loadError));
-          setStatus(staffContactsCache.peek() ? 'ready' : 'error');
+          setStatus(api.cache.peek() ? 'ready' : 'error');
         }
       }
     };
@@ -83,13 +82,13 @@ export function useStaffContacts(): StaffContactsController {
       active = false;
       window.clearInterval(timer);
     };
-  }, [loadCount]);
+  }, [api, loadCount]);
 
   useEffect(() => {
     if (status === 'ready') {
-      staffContactsCache.remember(contacts);
+      api.cache.remember(contacts);
     }
-  }, [contacts, status]);
+  }, [api, contacts, status]);
 
   const query = search.trim().toLowerCase();
   const visible = useMemo(
@@ -114,7 +113,7 @@ export function useStaffContacts(): StaffContactsController {
       if (!target) {
         return current;
       }
-      const updated = { ...target, lastMessage: { body: message.body, sentAt: message.sentAt, fromAdmin: true } };
+      const updated = { ...target, lastMessage: { body: message.body, sentAt: message.sentAt, fromMe: true } };
       return [updated, ...current.filter((contact) => contact.id !== contactId)];
     });
   }, []);

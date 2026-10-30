@@ -1,4 +1,4 @@
-import { isRole, type StaffRole } from '@/modules/authentication';
+import { isRole } from '@/modules/authentication';
 import type { ChatMessage, MessagePreview, StaffContact } from '../shared/communication.types';
 
 type RawRecord = Record<string, unknown>;
@@ -24,10 +24,6 @@ function readTimestamp(record: RawRecord, key: string): string | null {
   return typeof value === 'string' && !Number.isNaN(Date.parse(value)) ? value : null;
 }
 
-function isStaffRole(value: unknown): value is StaffRole {
-  return isRole(value) && value !== 'ADMIN';
-}
-
 function listFrom(raw: unknown): unknown[] {
   return Array.isArray(raw) ? raw : isRecord(raw) && Array.isArray(raw.items) ? raw.items : [];
 }
@@ -38,17 +34,22 @@ function parsePreview(raw: unknown): MessagePreview | null {
   }
   const body = readText(raw, 'body', MAX_MESSAGE_LENGTH);
   const sentAt = readTimestamp(raw, 'sentAt');
-  return body && sentAt ? { body, sentAt, fromAdmin: raw.fromAdmin === true } : null;
+  return body && sentAt ? { body, sentAt, fromMe: readFromMe(raw) } : null;
 }
 
-/** Staff contact from the server; entries without an id, name or staff role are skipped. */
+/** "Sent by me": workspace endpoints send `fromMe`; the original admin contract sends `fromAdmin`. */
+function readFromMe(record: RawRecord): boolean {
+  return record.fromMe === true || (record.fromMe === undefined && record.fromAdmin === true);
+}
+
+/** Contact from the server; entries without an id, name or known role are skipped. */
 export function parseContact(raw: unknown): StaffContact | null {
   if (!isRecord(raw)) {
     return null;
   }
   const id = readId(raw);
   const name = readText(raw, 'name', 120);
-  if (!id || !name || !isStaffRole(raw.role)) {
+  if (!id || !name || !isRole(raw.role)) {
     return null;
   }
   const unread = raw.unreadCount;
@@ -78,7 +79,7 @@ export function parseMessage(raw: unknown): ChatMessage | null {
   const id = readId(raw);
   const body = readText(raw, 'body', MAX_MESSAGE_LENGTH);
   const sentAt = readTimestamp(raw, 'sentAt');
-  return id && body && sentAt ? Object.freeze({ id, body, sentAt, fromAdmin: raw.fromAdmin === true, read: raw.read === true }) : null;
+  return id && body && sentAt ? Object.freeze({ id, body, sentAt, fromMe: readFromMe(raw), read: raw.read === true }) : null;
 }
 
 /** Oldest first, as a chat thread reads top to bottom. */

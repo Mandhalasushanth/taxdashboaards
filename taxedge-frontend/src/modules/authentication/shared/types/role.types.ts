@@ -16,6 +16,8 @@ export interface RoleProfile {
   readonly area: WorkspaceArea;
   readonly domain: ServiceDomain;
   readonly tier: RoleTier;
+  /** Every page of this role's workspace lives under this path. */
+  readonly workspaceRoot: string;
   readonly landingRoute: string;
   readonly dashboardTitle: string;
   readonly dashboardSummary: string;
